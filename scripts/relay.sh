@@ -37,7 +37,7 @@ execute_codex_task() {
 
   # 인자(Argument)로 넘기지 않고, 표준 입력 리다이렉션(<)을 사용하여 파일 내용을 직접 전달합니다.
   # 이렇게 하면 쉘의 인자 처리 과정에서 발생하는 한글 깨짐을 방지할 수 있습니다.
-  ${CODEX_CLI_COMMAND} exec --skip-git-repo-check < "${MISSION_PATH}" > "$REPORT_PATH" 2>&1
+  ${CODEX_CLI_COMMAND} exec --sandbox workspace-write --skip-git-repo-check < "${MISSION_PATH}" > "$REPORT_PATH" 2>&1
 
   local exit_code=$?
   if [ $exit_code -eq 0 ]; then
