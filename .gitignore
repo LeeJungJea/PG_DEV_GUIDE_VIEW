@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -38,3 +39,6 @@ dist-ssr
 .codex-runtime/
 conversation_log.md
 MISSION_REPORT.md
+=======
+.vercel
+>>>>>>> 40380379eb162dd0a92360bde6f6a04288703f46
