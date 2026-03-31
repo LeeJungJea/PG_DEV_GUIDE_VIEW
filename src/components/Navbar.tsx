@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import LoginDialog from './LoginDialog';
+import { useAuthStore } from '../hooks/useAuth';
 
 const Navbar: React.FC = () => {
   const location = useLocation();
+  const [isLoginOpen, setLoginOpen] = useState(false);
+  const { user, logout } = useAuthStore((state) => ({ user: state.user, logout: state.logout }));
 
   const isActive = (path: string) => {
     if (path === '/' && location.pathname === '/') return true;
@@ -44,15 +48,41 @@ const Navbar: React.FC = () => {
             </Link>
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <button className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 transition-colors text-sm font-medium px-4 py-2">
             Admin
           </button>
-          <button className="bg-primary-container text-on-primary-container px-5 py-2 rounded-lg text-sm font-bold transition-transform scale-95 active:scale-90">
-            로그인
-          </button>
+          {user ? (
+            <>
+              <button
+                type="button"
+                className="text-zinc-600 dark:text-zinc-400 transition-colors text-sm font-medium px-4 py-2 rounded-md border border-zinc-200 hover:border-zinc-400 dark:border-zinc-800"
+              >
+                {user.username}
+              </button>
+              <button
+                type="button"
+                className="bg-white/90 text-primary px-4 py-2 rounded-lg text-sm font-bold transition hover:bg-surface-container-lowest"
+                onClick={() => {
+                  logout();
+                  setLoginOpen(false);
+                }}
+              >
+                로그아웃
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              className="bg-primary-container text-on-primary-container px-5 py-2 rounded-lg text-sm font-bold transition-transform ease-out duration-200 transform scale-95 active:scale-90"
+              onClick={() => setLoginOpen(true)}
+            >
+              로그인
+            </button>
+          )}
         </div>
       </div>
+      <LoginDialog isOpen={isLoginOpen} onClose={() => setLoginOpen(false)} />
     </nav>
   );
 };
