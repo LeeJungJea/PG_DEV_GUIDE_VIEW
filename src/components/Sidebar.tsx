@@ -1,19 +1,35 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 
 const Sidebar: React.FC = () => {
-  const menuItems = [
+  const location = useLocation();
+  const isAdminPath = location.pathname.startsWith('/admin');
+
+  const apiMenuItems = [
     { name: '결제하기', icon: 'payments', path: '/api/payment' },
     { name: '취소하기', icon: 'history_toggle_off', path: '/api/cancel' },
     { name: '결제상태조회', icon: 'manage_search', path: '/api/status' },
     { name: 'API테스트', icon: 'biotech', path: '/playground' },
   ];
 
+  const adminMenuItems = [
+    { name: '대시보드', icon: 'dashboard', path: '/admin/dashboard' },
+    { name: '회원관리', icon: 'group', path: '/admin/users' },
+    { name: 'API 관리', icon: 'api', path: '/admin/api' },
+    { name: '문의관리', icon: 'support_agent', path: '/admin/support' },
+  ];
+
+  const menuItems = isAdminPath ? adminMenuItems : apiMenuItems;
+
   return (
     <aside className="h-[calc(100vh-64px)] w-64 sticky top-16 hidden md:flex flex-col p-4 space-y-2 border-r border-zinc-200/20 dark:border-zinc-800/20 bg-zinc-50 dark:bg-zinc-900 font-body text-sm leading-relaxed">
       <div className="mb-6 px-2">
-        <h3 className="text-lg font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-tighter">API Reference</h3>
-        <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">CJ PG Developer Portal</p>
+        <h3 className={`text-lg font-black uppercase tracking-tighter ${isAdminPath ? 'text-primary' : 'text-zinc-900 dark:text-zinc-100'}`}>
+          {isAdminPath ? 'Admin Console' : 'API Reference'}
+        </h3>
+        <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">
+          {isAdminPath ? 'System Management' : 'CJ PG Developer Portal'}
+        </p>
       </div>
       <nav className="space-y-1">
         {menuItems.map((item) => (
@@ -34,7 +50,9 @@ const Sidebar: React.FC = () => {
         ))}
       </nav>
       <div className="mt-auto pt-4 border-t border-zinc-200/50">
-        <p className="px-3 text-[10px] text-zinc-400 uppercase tracking-widest font-bold">Documentation</p>
+        <p className="px-3 text-[10px] text-zinc-400 uppercase tracking-widest font-bold">
+          {isAdminPath ? 'Admin Access Only' : 'Documentation'}
+        </p>
       </div>
     </aside>
   );

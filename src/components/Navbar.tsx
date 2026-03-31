@@ -42,9 +42,14 @@ const Navbar: React.FC = () => {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <button className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 transition-colors text-sm font-medium px-4 py-2">
+          <Link 
+            to="/admin/dashboard"
+            className={`${
+              isActive('/admin') ? 'text-[#e5004f] font-bold' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900'
+            } transition-colors text-sm font-medium px-4 py-2`}
+          >
             Admin
-          </button>
+          </Link>
           {user ? (
             <>
               <button
