@@ -62,7 +62,7 @@ const Navbar: React.FC = () => {
             </span>
             <input 
               type="text" 
-              placeholder="문의 번호 검색..." 
+              placeholder="문의 번호 검??.." 
               className="w-full bg-zinc-100 dark:bg-zinc-900 border-none rounded-2xl py-2.5 pl-12 pr-4 text-sm font-medium placeholder:text-zinc-400 focus:ring-2 focus:ring-primary/20 transition-all outline-none"
             />
           </div>
@@ -97,7 +97,7 @@ const Navbar: React.FC = () => {
                   setLoginOpen(false);
                 }}
               >
-                로그아웃
+                로그?�웃
               </button>
             </div>
           ) : (
@@ -106,7 +106,7 @@ const Navbar: React.FC = () => {
               className="bg-primary text-white px-6 py-2.5 rounded-xl text-sm font-black shadow-lg shadow-primary/20 transition-all hover:bg-primary/90 active:scale-95"
               onClick={() => setLoginOpen(true)}
             >
-              로그인
+              로그??
             </button>
           )}
         </div>

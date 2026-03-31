@@ -5,7 +5,7 @@ interface ApiItem {
   name: string;
   endpoint: string;
   version: string;
-  status: '정상 운영' | '연결 시연' | '점검 중';
+  status: '?�상 ?�영' | '?�결 ?�연' | '?��? �?;
   updatedAt: string;
   description: string;
   method: string;
@@ -15,29 +15,29 @@ interface ApiItem {
 const ApiManagement: React.FC = () => {
   const apis: ApiItem[] = [
     {
-      id: 'api1', name: 'CJ ONE 포인트 조회', endpoint: '/v1/points/balance', version: 'v1.2.4',
-      status: '정상 운영', updatedAt: '2024.05.20 14:32', method: 'POST',
-      description: '사용자의 CJ ONE 포인트 잔액을 실시간으로 조회하여반환합니다. 제휴사 연동 시 필수적으로 사용되는 엔드포인트입니다.',
+      id: 'api1', name: 'CJ ONE ?�인??조회', endpoint: '/v1/points/balance', version: 'v1.2.4',
+      status: '?�상 ?�영', updatedAt: '2024.05.20 14:32', method: 'POST',
+      description: '?�용?�의 CJ ONE ?�인???�액???�시간으�?조회?�여반환?�니?? ?�휴???�동 ???�수?�으�??�용?�는 ?�드?�인?�입?�다.',
       params: [
-        { key: 'user_id', type: 'String', required: true, desc: '고객 식별자 (CJ ONE ID)' },
-        { key: 'auth_token', type: 'String', required: true, desc: 'API 인증 토큰' },
+        { key: 'user_id', type: 'String', required: true, desc: '고객 ?�별??(CJ ONE ID)' },
+        { key: 'auth_token', type: 'String', required: true, desc: 'API ?�증 ?�큰' },
       ],
     },
     {
-      id: 'api2', name: '간편결제 승인요청', endpoint: '/v2/payment/approve', version: 'v2.0.1',
-      status: '정상 운영', updatedAt: '2024.05.18 09:15', method: 'POST',
-      description: '간편결제 승인 요청을 처리하는 API입니다.',
+      id: 'api2', name: '간편결제 ?�인?�청', endpoint: '/v2/payment/approve', version: 'v2.0.1',
+      status: '?�상 ?�영', updatedAt: '2024.05.18 09:15', method: 'POST',
+      description: '간편결제 ?�인 ?�청??처리?�는 API?�니??',
       params: [
         { key: 'order_id', type: 'String', required: true, desc: '주문 고유 번호' },
         { key: 'amount', type: 'Number', required: true, desc: '결제 금액' },
       ],
     },
     {
-      id: 'api3', name: '회원 배송지 연동', endpoint: '/v1/user/address', version: 'v1.1.0',
-      status: '연결 시연', updatedAt: '2024.05.15 22:45', method: 'GET',
-      description: '회원의 기본 배송지 정보를 조회합니다.',
+      id: 'api3', name: '?�원 배송지 ?�동', endpoint: '/v1/user/address', version: 'v1.1.0',
+      status: '?�결 ?�연', updatedAt: '2024.05.15 22:45', method: 'GET',
+      description: '?�원??기본 배송지 ?�보�?조회?�니??',
       params: [
-        { key: 'user_id', type: 'String', required: true, desc: '회원 ID' },
+        { key: 'user_id', type: 'String', required: true, desc: '?�원 ID' },
       ],
     },
   ];
@@ -46,8 +46,8 @@ const ApiManagement: React.FC = () => {
   const selected = apis.find((a) => a.id === selectedId);
 
   const statusStyle = (s: string) => {
-    if (s === '정상 운영') return 'text-green-600';
-    if (s === '연결 시연') return 'text-amber-500';
+    if (s === '?�상 ?�영') return 'text-green-600';
+    if (s === '?�결 ?�연') return 'text-amber-500';
     return 'text-red-500';
   };
 
@@ -57,20 +57,20 @@ const ApiManagement: React.FC = () => {
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2 text-sm text-zinc-400">
           <span className="text-zinc-400">관리자</span>
-          <span>›</span>
-          <span className="font-bold text-zinc-900 text-xl">API 관리</span>
+          <span>??/span>
+          <span className="font-bold text-zinc-900 text-xl">API 관�?/span>
         </div>
         <div className="flex items-center gap-3">
           <div className="relative">
             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-lg">search</span>
             <input
               type="text"
-              placeholder="API 검색..."
+              placeholder="API 검??.."
               className="pl-10 pr-4 py-2.5 bg-white border border-zinc-200 rounded-xl text-sm w-56 outline-none focus:ring-2 focus:ring-primary/20 transition-all"
             />
           </div>
           <button className="px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 active:scale-95">
-            <span className="text-lg leading-none">+</span> API 등록
+            <span className="text-lg leading-none">+</span> API ?�록
           </button>
         </div>
       </div>
@@ -78,24 +78,24 @@ const ApiManagement: React.FC = () => {
       {/* KPI Cards */}
       <div className="grid grid-cols-4 gap-4">
         <div className="bg-white rounded-2xl border border-zinc-100 p-5 shadow-sm">
-          <p className="text-xs font-bold text-zinc-400 mb-1">전체 API 수</p>
+          <p className="text-xs font-bold text-zinc-400 mb-1">?�체 API ??/p>
           <p className="text-3xl font-black text-zinc-900">128</p>
-          <p className="text-[11px] text-green-500 font-bold mt-1">▲ +4 이번 달</p>
+          <p className="text-[11px] text-green-500 font-bold mt-1">??+4 ?�번 ??/p>
         </div>
         <div className="bg-white rounded-2xl border border-zinc-100 p-5 shadow-sm">
-          <p className="text-xs font-bold text-zinc-400 mb-1">활성 상태</p>
+          <p className="text-xs font-bold text-zinc-400 mb-1">?�성 ?�태</p>
           <p className="text-3xl font-black text-green-500">124</p>
-          <p className="text-[11px] text-zinc-400 font-medium mt-1">96.8% 가동률</p>
+          <p className="text-[11px] text-zinc-400 font-medium mt-1">96.8% 가?�률</p>
         </div>
         <div className="bg-white rounded-2xl border border-zinc-100 p-5 shadow-sm">
-          <p className="text-xs font-bold text-zinc-400 mb-1">점검 필요</p>
+          <p className="text-xs font-bold text-zinc-400 mb-1">?��? ?�요</p>
           <p className="text-3xl font-black text-amber-500">2</p>
-          <p className="text-[11px] text-amber-500 font-bold mt-1">즉시확인 권장</p>
+          <p className="text-[11px] text-amber-500 font-bold mt-1">즉시?�인 권장</p>
         </div>
         <div className="bg-white rounded-2xl border border-zinc-100 p-5 shadow-sm">
-          <p className="text-xs font-bold text-zinc-400 mb-1">평균 응답 속도</p>
+          <p className="text-xs font-bold text-zinc-400 mb-1">?�균 ?�답 ?�도</p>
           <p className="text-3xl font-black text-zinc-900">42<span className="text-lg">ms</span></p>
-          <p className="text-[11px] text-zinc-400 font-medium mt-1">지연파 정상</p>
+          <p className="text-[11px] text-zinc-400 font-medium mt-1">지?�파 ?�상</p>
         </div>
       </div>
 
@@ -116,11 +116,11 @@ const ApiManagement: React.FC = () => {
         <table className="w-full text-left">
           <thead>
             <tr className="border-y border-zinc-100">
-              <th className="px-6 py-3.5 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">이름 / 엔드포인트</th>
+              <th className="px-6 py-3.5 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">?�름 / ?�드?�인??/th>
               <th className="px-4 py-3.5 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">버전</th>
-              <th className="px-4 py-3.5 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">상태</th>
-              <th className="px-4 py-3.5 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">마지막 수정일</th>
-              <th className="px-4 py-3.5 text-[11px] font-bold text-zinc-400 uppercase tracking-wider text-right">관리</th>
+              <th className="px-4 py-3.5 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">?�태</th>
+              <th className="px-4 py-3.5 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">마�?�??�정??/th>
+              <th className="px-4 py-3.5 text-[11px] font-bold text-zinc-400 uppercase tracking-wider text-right">관�?/th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-50">
@@ -155,11 +155,11 @@ const ApiManagement: React.FC = () => {
         <div className="px-6 py-4 border-t border-zinc-50 flex justify-between items-center">
           <span className="text-xs text-zinc-400 font-medium">Showing 1 to 3 of 128 entries</span>
           <div className="flex items-center gap-1">
-            <button className="px-3 py-1.5 text-xs font-bold text-zinc-400 border border-zinc-200 rounded-lg hover:border-zinc-400 transition-colors">이전</button>
+            <button className="px-3 py-1.5 text-xs font-bold text-zinc-400 border border-zinc-200 rounded-lg hover:border-zinc-400 transition-colors">?�전</button>
             <button className="px-3 py-1.5 text-xs font-bold text-white bg-primary rounded-lg">1</button>
             <button className="px-3 py-1.5 text-xs font-bold text-zinc-500 border border-zinc-200 rounded-lg hover:border-zinc-400 transition-colors">2</button>
             <button className="px-3 py-1.5 text-xs font-bold text-zinc-500 border border-zinc-200 rounded-lg hover:border-zinc-400 transition-colors">3</button>
-            <button className="px-3 py-1.5 text-xs font-bold text-zinc-400 border border-zinc-200 rounded-lg hover:border-zinc-400 transition-colors">다음</button>
+            <button className="px-3 py-1.5 text-xs font-bold text-zinc-400 border border-zinc-200 rounded-lg hover:border-zinc-400 transition-colors">?�음</button>
           </div>
         </div>
       </div>
@@ -173,8 +173,8 @@ const ApiManagement: React.FC = () => {
                 <span className="material-symbols-outlined text-primary">settings_ethernet</span>
               </div>
               <div>
-                <h3 className="text-lg font-black text-zinc-900">API 정보 등록/수정</h3>
-                <p className="text-xs text-zinc-400 font-medium">사용 중 API 엔드포인트를 정의하고 파라미터를 설정합니다.</p>
+                <h3 className="text-lg font-black text-zinc-900">API ?�보 ?�록/?�정</h3>
+                <p className="text-xs text-zinc-400 font-medium">?�용 �?API ?�드?�인?��? ?�의?�고 ?�라미터�??�정?�니??</p>
               </div>
             </div>
             <button onClick={() => setSelectedId(null)} className="text-zinc-400 hover:text-zinc-600 transition-colors">
@@ -185,11 +185,11 @@ const ApiManagement: React.FC = () => {
           {/* Form Fields */}
           <div className="grid grid-cols-2 gap-6">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-600">API 이름</label>
+              <label className="text-xs font-bold text-zinc-600">API ?�름</label>
               <input className="w-full bg-zinc-50 rounded-xl px-4 py-3 text-sm outline-none border border-zinc-100 focus:ring-2 focus:ring-primary/10 transition-all font-medium" defaultValue={selected.name} />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-600">상세 설명</label>
+              <label className="text-xs font-bold text-zinc-600">?�세 ?�명</label>
               <textarea className="w-full bg-zinc-50 rounded-xl px-4 py-3 text-sm outline-none border border-zinc-100 resize-none focus:ring-2 focus:ring-primary/10 transition-all" rows={3} defaultValue={selected.description} />
             </div>
           </div>
@@ -217,10 +217,10 @@ const ApiManagement: React.FC = () => {
           {/* Parameters Table */}
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <h4 className="font-black text-zinc-900 text-sm">요청 파라미터 (Parameters)</h4>
+              <h4 className="font-black text-zinc-900 text-sm">?�청 ?�라미터 (Parameters)</h4>
               <button className="text-xs font-bold text-primary flex items-center gap-1">
                 <span className="material-symbols-outlined text-sm">add_circle</span>
-                필드 추가
+                ?�드 추�?
               </button>
             </div>
             <div className="border border-zinc-100 rounded-2xl overflow-hidden">
@@ -269,7 +269,7 @@ const ApiManagement: React.FC = () => {
           {/* Action Buttons */}
           <div className="flex justify-end gap-3 pt-2">
             <button onClick={() => setSelectedId(null)} className="px-6 py-3 text-sm font-bold text-zinc-600 hover:text-zinc-900 transition-colors">취소</button>
-            <button className="px-8 py-3 text-sm font-bold text-white bg-primary rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all active:scale-95">설정 저장하기</button>
+            <button className="px-8 py-3 text-sm font-bold text-white bg-primary rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all active:scale-95">?�정 ?�?�하�?/button>
           </div>
         </div>
       )}

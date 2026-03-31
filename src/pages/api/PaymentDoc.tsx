@@ -10,14 +10,14 @@ const PaymentDoc: React.FC = () => {
             <span className="bg-primary/10 text-primary px-3 py-1 rounded text-[10px] font-bold tracking-widest uppercase italic">Standard API</span>
             <span className="text-zinc-400 text-sm">v1.2.0</span>
           </div>
-          <h1 className="text-4xl lg:text-5xl font-extrabold tracking-tight text-on-surface font-headline leading-tight">결제하기</h1>
+          <h1 className="text-4xl lg:text-5xl font-extrabold tracking-tight text-on-surface font-headline leading-tight">결제?�기</h1>
           <p className="text-lg text-zinc-600 max-w-2xl leading-relaxed">
-            통합 결제창을 호출하기 위한 사전 준비 단계입니다. 결제 금액, 상품명, 리다이렉트 URL 등을 전달하여 **결제 진입용 URL**을 발급받습니다.
+            ?�합 결제창을 ?�출?�기 ?�한 ?�전 준�??�계?�니?? 결제 금액, ?�품�? 리다?�렉??URL ?�을 ?�달?�여 **결제 진입??URL**??발급받습?�다.
           </p>
         </div>
         <button className="bg-primary text-white px-6 py-3 rounded-lg font-bold flex items-center gap-2 shadow-lg hover:bg-[#b7003d] transition-all scale-100 active:scale-95">
           <span className="material-symbols-outlined">play_circle</span>
-          API 테스트 도구로 이동
+          API ?�스???�구�??�동
         </button>
       </div>
 
@@ -38,47 +38,47 @@ const PaymentDoc: React.FC = () => {
           <section>
             <h2 className="text-2xl font-bold mb-6 text-on-surface flex items-center gap-2">
               <span className="w-1.5 h-6 bg-primary rounded-full"></span>
-              요청 파라미터
+              ?�청 ?�라미터
             </h2>
             <div className="overflow-hidden rounded-xl bg-surface-container-lowest shadow-sm border border-zinc-100">
               <table className="w-full text-left text-sm border-collapse">
                 <thead className="bg-surface-container text-zinc-600 font-semibold">
                   <tr>
-                    <th className="px-6 py-4">파라미터</th>
-                    <th className="px-6 py-4">타입</th>
-                    <th className="px-6 py-4">설명</th>
+                    <th className="px-6 py-4">?�라미터</th>
+                    <th className="px-6 py-4">?�??/th>
+                    <th className="px-6 py-4">?�명</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-100 italic">
                   <tr>
                     <td className="px-6 py-4 font-mono text-primary font-semibold">paymentMethodId</td>
                     <td className="px-6 py-4 text-zinc-400">string</td>
-                    <td className="px-6 py-4">결제 수단 코드 (`kakaoPay`, `tossPay`) <span className="text-error text-[10px] font-bold ml-1 uppercase tracking-tighter">Required</span></td>
+                    <td className="px-6 py-4">결제 ?�단 코드 (`kakaoPay`, `tossPay`) <span className="text-error text-[10px] font-bold ml-1 uppercase tracking-tighter">Required</span></td>
                   </tr>
                   <tr>
                     <td className="px-6 py-4 font-mono text-primary font-semibold">userId</td>
                     <td className="px-6 py-4 text-zinc-400">string</td>
-                    <td className="px-6 py-4">가맹점 사용자 고유 ID <span className="text-error text-[10px] font-bold ml-1 uppercase tracking-tighter">Required</span></td>
+                    <td className="px-6 py-4">가맹점 ?�용??고유 ID <span className="text-error text-[10px] font-bold ml-1 uppercase tracking-tighter">Required</span></td>
                   </tr>
                   <tr>
                     <td className="px-6 py-4 font-mono text-primary font-semibold">itemName</td>
                     <td className="px-6 py-4 text-zinc-400">string</td>
-                    <td className="px-6 py-4">결제 상품 명칭 <span className="text-error text-[10px] font-bold ml-1 uppercase tracking-tighter">Required</span></td>
+                    <td className="px-6 py-4">결제 ?�품 명칭 <span className="text-error text-[10px] font-bold ml-1 uppercase tracking-tighter">Required</span></td>
                   </tr>
                   <tr>
                     <td className="px-6 py-4 font-mono text-primary font-semibold">amount</td>
                     <td className="px-6 py-4 text-zinc-400">int</td>
-                    <td className="px-6 py-4">총 결제 금액 <span className="text-error text-[10px] font-bold ml-1 uppercase tracking-tighter">Required</span></td>
+                    <td className="px-6 py-4">�?결제 금액 <span className="text-error text-[10px] font-bold ml-1 uppercase tracking-tighter">Required</span></td>
                   </tr>
                   <tr>
                     <td className="px-6 py-4 font-mono text-primary font-semibold">approvalUrl</td>
                     <td className="px-6 py-4 text-zinc-400">string</td>
-                    <td className="px-6 py-4">결제 성공 시 결과를 전달받을 가맹점의 리다이렉트 URL <span className="text-error text-[10px] font-bold ml-1 uppercase tracking-tighter">Required</span></td>
+                    <td className="px-6 py-4">결제 ?�공 ??결과�??�달받을 가맹점??리다?�렉??URL <span className="text-error text-[10px] font-bold ml-1 uppercase tracking-tighter">Required</span></td>
                   </tr>
                   <tr>
                     <td className="px-6 py-4 font-mono text-primary font-semibold">orderId</td>
                     <td className="px-6 py-4 text-zinc-400">string</td>
-                    <td className="px-6 py-4">가맹점 관리용 주문 번호 (미입력 시 서버 자동 생성)</td>
+                    <td className="px-6 py-4">가맹점 관리용 주문 번호 (미입?????�버 ?�동 ?�성)</td>
                   </tr>
                 </tbody>
               </table>
@@ -89,10 +89,10 @@ const PaymentDoc: React.FC = () => {
           <section className="p-6 bg-secondary/5 rounded-xl border border-secondary/10">
             <h4 className="text-sm font-bold text-secondary flex items-center gap-2 mb-2 italic">
                <span className="material-symbols-outlined text-sm">lightbulb</span>
-               결제 연동 팁
+               결제 ?�동 ??
             </h4>
             <p className="text-xs text-zinc-600 leading-relaxed">
-              사용자가 결제를 마친 후 가맹점의 `approvalUrl`로 다시 돌아올 때, `status`, `paymentId`, `amount` 등의 데이터가 쿼리 파라미터로 함께 전달됩니다. 이 파라미터들을 이용해 결제 완료 처리를 진행하세요.
+              ?�용?��? 결제�?마친 ??가맹점??`approvalUrl`�??�시 ?�아???? `status`, `paymentId`, `amount` ?�의 ?�이?��? 쿼리 ?�라미터�??�께 ?�달?�니?? ???�라미터?�을 ?�용??결제 ?�료 처리�?진행?�세??
             </p>
           </section>
         </div>
@@ -125,7 +125,7 @@ const PaymentDoc: React.FC = () => {
                 curl -X POST /api/pay/ready \<br/>
                 &nbsp;&nbsp;-d "paymentMethodId=kakaoPay" \<br/>
                 &nbsp;&nbsp;-d "amount=15000" \<br/>
-                &nbsp;&nbsp;-d "itemName=CJ포인트 충전"
+                &nbsp;&nbsp;-d "itemName=CJ?�인??충전"
               </div>
             </div>
           </div>

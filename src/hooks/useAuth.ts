@@ -70,7 +70,7 @@ export const useAuthStore = create<AuthState>((set) => {
         set({ ...nextState, error: undefined });
         persistState(nextState);
       } catch (err) {
-        const message = err instanceof Error ? err.message : '로그인에 실패했습니다.';
+        const message = err instanceof Error ? err.message : '로그?�에 ?�패?�습?�다.';
         set({ error: message });
         throw err;
       } finally {

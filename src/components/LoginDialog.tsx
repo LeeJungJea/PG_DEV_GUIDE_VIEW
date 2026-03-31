@@ -50,7 +50,7 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ isOpen, onClose }) => {
         onSubmit={handleSubmit}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">관리자 로그인</h2>
+          <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">관리자 로그??/h2>
           <button type="button" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200" onClick={onClose}>
             <span className="material-symbols-outlined">close</span>
           </button>
@@ -69,7 +69,7 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ isOpen, onClose }) => {
           className="mb-6 w-full rounded-xl border border-zinc-200 px-4 py-3 text-base outline-none transition focus:border-primary/80 dark:border-zinc-800 dark:bg-zinc-900"
           type="password"
           name="password"
-          placeholder="●●●●●●●●"
+          placeholder="?�●?�●?�●?�●"
           value={credentials.password}
           onChange={(event) => setCredentials({ ...credentials, password: event.target.value })}
           required
@@ -84,7 +84,7 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ isOpen, onClose }) => {
           className="w-full rounded-2xl bg-primary px-6 py-3 text-base font-bold text-white transition hover:bg-primary/90 disabled:cursor-wait disabled:opacity-60"
           disabled={loading}
         >
-          {loading ? '로그인 중...' : '로그인'}
+          {loading ? '로그??�?..' : '로그??}
         </button>
       </form>
     </div>

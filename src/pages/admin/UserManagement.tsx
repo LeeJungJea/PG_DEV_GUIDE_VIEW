@@ -5,7 +5,7 @@ interface Member {
   name: string;
   initial: string;
   email: string;
-  status: '활성' | '정지';
+  status: '?�성' | '?��?';
   role: string;
   phone?: string;
   roles?: { name: string; desc: string; active: boolean }[];
@@ -14,26 +14,26 @@ interface Member {
 
 const UserManagement: React.FC = () => {
   const members: Member[] = [
-    { id: 'u1', name: '김철수', initial: '김', email: 'chulsoo.kim@gmail.com', status: '활성', role: 'Standard User', phone: '010-9876-5432',
-      roles: [{ name: 'API Developer', desc: 'API Key 생성 및 문서 접근 권한', active: true }, { name: 'Billing Manager', desc: '결제 내역 조회 및 결제 수단 관리', active: false }],
-      activityLog: [{ title: '로그인', date: '2024.05.21 09:30' }]
+    { id: 'u1', name: '김철수', initial: '김', email: 'chulsoo.kim@gmail.com', status: '?�성', role: 'Standard User', phone: '010-9876-5432',
+      roles: [{ name: 'API Developer', desc: 'API Key ?�성 �?문서 ?�근 권한', active: true }, { name: 'Billing Manager', desc: '결제 ?�역 조회 �?결제 ?�단 관�?, active: false }],
+      activityLog: [{ title: '로그??, date: '2024.05.21 09:30' }]
     },
-    { id: 'u2', name: '이영희', initial: '이', email: 'young.lee@cj.net', status: '정지', role: 'Merchant Admin', phone: '010-5555-1234',
-      roles: [{ name: 'API Developer', desc: 'API Key 생성 및 문서 접근 권한', active: false }, { name: 'Billing Manager', desc: '결제 내역 조회 및 결제 수단 관리', active: true }],
-      activityLog: [{ title: '계정 정지', date: '2024.05.19 14:00' }]
+    { id: 'u2', name: '?�영??, initial: '??, email: 'young.lee@cj.net', status: '?��?', role: 'Merchant Admin', phone: '010-5555-1234',
+      roles: [{ name: 'API Developer', desc: 'API Key ?�성 �?문서 ?�근 권한', active: false }, { name: 'Billing Manager', desc: '결제 ?�역 조회 �?결제 ?�단 관�?, active: true }],
+      activityLog: [{ title: '계정 ?��?', date: '2024.05.19 14:00' }]
     },
-    { id: 'u3', name: '박지성', initial: '', email: 'jisung.park@dev.io', status: '활성', role: 'Developer', phone: '010-1234-5678',
-      roles: [{ name: 'API Developer', desc: 'API Key 생성 및 문서 접근 권한', active: true }, { name: 'Billing Manager', desc: '결제 내역 조회 및 결제 수단 관리', active: false }],
-      activityLog: [{ title: '비밀번호 변경', date: '2024.05.20 10:15' }]
+    { id: 'u3', name: '박�???, initial: '', email: 'jisung.park@dev.io', status: '?�성', role: 'Developer', phone: '010-1234-5678',
+      roles: [{ name: 'API Developer', desc: 'API Key ?�성 �?문서 ?�근 권한', active: true }, { name: 'Billing Manager', desc: '결제 ?�역 조회 �?결제 ?�단 관�?, active: false }],
+      activityLog: [{ title: '비�?번호 변�?, date: '2024.05.20 10:15' }]
     },
-    { id: 'u4', name: '최유리', initial: '최', email: 'yuri.choi@company.com', status: '활성', role: 'Standard User', phone: '010-7777-8888',
-      roles: [{ name: 'API Developer', desc: 'API Key 생성 및 문서 접근 권한', active: false }, { name: 'Billing Manager', desc: '결제 내역 조회 및 결제 수단 관리', active: false }],
-      activityLog: [{ title: '가입 완료', date: '2024.05.18 16:20' }]
+    { id: 'u4', name: '최유�?, initial: '�?, email: 'yuri.choi@company.com', status: '?�성', role: 'Standard User', phone: '010-7777-8888',
+      roles: [{ name: 'API Developer', desc: 'API Key ?�성 �?문서 ?�근 권한', active: false }, { name: 'Billing Manager', desc: '결제 ?�역 조회 �?결제 ?�단 관�?, active: false }],
+      activityLog: [{ title: '가???�료', date: '2024.05.18 16:20' }]
     },
   ];
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState('전체');
+  const [activeTab, setActiveTab] = useState('?�체');
   const [checkedIds, setCheckedIds] = useState<string[]>(['u3']);
 
   const selected = members.find((m) => m.id === selectedId);
@@ -43,20 +43,20 @@ const UserManagement: React.FC = () => {
   };
 
   const tabs = [
-    { label: '전체', count: '1,240' },
-    { label: '활성', count: '1,100' },
-    { label: '비활성', count: '140' },
+    { label: '?�체', count: '1,240' },
+    { label: '?�성', count: '1,100' },
+    { label: '비활??, count: '140' },
   ];
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 bg-zinc-50/30 -m-8 p-8 min-h-screen">
       {/* Header with breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-zinc-400">
-        <span className="text-2xl font-black text-zinc-900">회원관리</span>
+        <span className="text-2xl font-black text-zinc-900">?�원관�?/span>
         <span className="mx-2">|</span>
-        <span>사용자</span>
-        <span>›</span>
-        <span className="font-medium text-zinc-600">전체 회원 리스트</span>
+        <span>?�용??/span>
+        <span>??/span>
+        <span className="font-medium text-zinc-600">?�체 ?�원 리스??/span>
       </div>
 
       {/* Tabs & Sort */}
@@ -77,7 +77,7 @@ const UserManagement: React.FC = () => {
           ))}
         </div>
         <div className="flex items-center gap-2 bg-white border border-zinc-200 rounded-xl px-3 py-2">
-          <span className="text-xs font-bold text-zinc-500">가입일 순</span>
+          <span className="text-xs font-bold text-zinc-500">가?�일 ??/span>
           <span className="material-symbols-outlined text-xs text-zinc-400">expand_more</span>
         </div>
       </div>
@@ -92,8 +92,8 @@ const UserManagement: React.FC = () => {
                 <th className="px-5 py-4 w-10">
                   <div className="w-4 h-4 border-2 border-zinc-300 rounded" />
                 </th>
-                <th className="px-4 py-4 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">회원정보</th>
-                <th className="px-4 py-4 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">상태</th>
+                <th className="px-4 py-4 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">?�원?�보</th>
+                <th className="px-4 py-4 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">?�태</th>
                 <th className="px-4 py-4 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">권한</th>
               </tr>
             </thead>
@@ -110,7 +110,7 @@ const UserManagement: React.FC = () => {
                     <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${
                       checkedIds.includes(m.id) ? 'bg-primary border-primary' : 'border-zinc-300'
                     }`}>
-                      {checkedIds.includes(m.id) && <span className="text-white text-[10px]">✓</span>}
+                      {checkedIds.includes(m.id) && <span className="text-white text-[10px]">??/span>}
                     </div>
                   </td>
                   <td className="px-4 py-5">
@@ -128,7 +128,7 @@ const UserManagement: React.FC = () => {
                   </td>
                   <td className="px-4 py-5">
                     <span className={`text-[11px] font-bold px-2.5 py-1 rounded-lg ${
-                      m.status === '활성' ? 'bg-blue-50 text-blue-600' : 'bg-red-50 text-red-500'
+                      m.status === '?�성' ? 'bg-blue-50 text-blue-600' : 'bg-red-50 text-red-500'
                     }`}>
                       {m.status}
                     </span>
@@ -139,7 +139,7 @@ const UserManagement: React.FC = () => {
             </tbody>
           </table>
           <div className="p-5 border-t border-zinc-50 text-xs text-zinc-400 font-medium">
-            총 1,240명 중 1-20 표시
+            �?1,240�?�?1-20 ?�시
           </div>
         </div>
 
@@ -147,12 +147,12 @@ const UserManagement: React.FC = () => {
         {selected && (
           <div className="w-[360px] shrink-0 bg-white rounded-2xl border border-zinc-100 shadow-sm p-8 space-y-6 animate-in slide-in-from-right-4 duration-300">
             <div className="flex justify-between items-start">
-              <h3 className="text-lg font-black text-zinc-900">회원 상세 정보</h3>
+              <h3 className="text-lg font-black text-zinc-900">?�원 ?�세 ?�보</h3>
               <button onClick={() => setSelectedId(null)} className="text-zinc-400 hover:text-zinc-600 transition-colors">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
-            <p className="text-xs text-zinc-400 -mt-4">회원 정보를 수정하고 권한을 관리합니다.</p>
+            <p className="text-xs text-zinc-400 -mt-4">?�원 ?�보�??�정?�고 권한??관리합?�다.</p>
 
             {/* Profile */}
             <div className="flex flex-col items-center py-4">
@@ -172,21 +172,21 @@ const UserManagement: React.FC = () => {
 
             {/* Basic Info */}
             <div className="space-y-4">
-              <h5 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">기본 정보</h5>
+              <h5 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">기본 ?�보</h5>
               <div className="space-y-1">
-                <label className="text-xs font-bold text-zinc-600">성명</label>
+                <label className="text-xs font-bold text-zinc-600">?�명</label>
                 <input className="w-full bg-zinc-50 rounded-xl px-4 py-2.5 text-sm outline-none" defaultValue={selected.name} />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-bold text-zinc-600">연락처</label>
+                <label className="text-xs font-bold text-zinc-600">?�락�?/label>
                 <input className="w-full bg-zinc-50 rounded-xl px-4 py-2.5 text-sm outline-none" defaultValue={selected.phone} />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-bold text-zinc-600">상태 설정</label>
+                <label className="text-xs font-bold text-zinc-600">?�태 ?�정</label>
                 <select className="w-full bg-zinc-50 rounded-xl px-4 py-2.5 text-sm outline-none appearance-none">
-                  <option>정상 (활성)</option>
-                  <option>정지</option>
-                  <option>탈퇴</option>
+                  <option>?�상 (?�성)</option>
+                  <option>?��?</option>
+                  <option>?�퇴</option>
                 </select>
               </div>
             </div>
@@ -194,8 +194,8 @@ const UserManagement: React.FC = () => {
             {/* Role Management */}
             <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <h5 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">권한 및 Role 관리</h5>
-                <button className="text-[11px] font-bold text-primary">역할 추가</button>
+                <h5 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">권한 �?Role 관�?/h5>
+                <button className="text-[11px] font-bold text-primary">??�� 추�?</button>
               </div>
               {selected.roles?.map((r, i) => (
                 <div key={i} className="flex items-center justify-between p-3 bg-zinc-50 rounded-xl">
@@ -209,7 +209,7 @@ const UserManagement: React.FC = () => {
                     </div>
                   </div>
                   <div className={`w-5 h-5 rounded-full flex items-center justify-center ${r.active ? 'bg-primary' : 'border-2 border-zinc-300'}`}>
-                    {r.active && <span className="text-white text-[10px]">✓</span>}
+                    {r.active && <span className="text-white text-[10px]">??/span>}
                   </div>
                 </div>
               ))}
@@ -217,7 +217,7 @@ const UserManagement: React.FC = () => {
 
             {/* Activity Log */}
             <div className="space-y-3">
-              <h5 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">최근 활동 로그</h5>
+              <h5 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">최근 ?�동 로그</h5>
               {selected.activityLog?.map((log, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <div className="w-2 h-2 rounded-full bg-primary" />
@@ -231,8 +231,8 @@ const UserManagement: React.FC = () => {
 
             {/* Action Buttons */}
             <div className="flex gap-3 pt-2">
-              <button className="flex-1 py-3 text-sm font-bold text-zinc-600 border border-zinc-200 rounded-xl hover:bg-zinc-50 transition-all">변경 취소</button>
-              <button className="flex-1 py-3 text-sm font-bold text-white bg-primary rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all active:scale-95">저장하기</button>
+              <button className="flex-1 py-3 text-sm font-bold text-zinc-600 border border-zinc-200 rounded-xl hover:bg-zinc-50 transition-all">변�?취소</button>
+              <button className="flex-1 py-3 text-sm font-bold text-white bg-primary rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all active:scale-95">?�?�하�?/button>
             </div>
           </div>
         )}
