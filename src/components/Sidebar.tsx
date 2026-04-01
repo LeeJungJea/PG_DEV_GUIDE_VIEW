@@ -80,21 +80,8 @@ const Sidebar: React.FC = () => {
               <p className="text-[10px] text-zinc-500 truncate">{user?.email ?? 'admin@cjone.com'}</p>
             </div>
           </div>
-        ) : (
-          <p className="px-3 text-[10px] text-zinc-400 uppercase tracking-widest font-bold">
-            Documentation
-          </p>
         )}
-        
-        {/* Unified Bottom LNB for simple access */}
-        {!isAdminPath && (
-          <div className="grid grid-cols-2 gap-2 text-[10px] font-bold text-zinc-400 p-2">
-            <span className="flex items-center gap-1"><span className="material-symbols-outlined text-xs">payments</span> 결제하기</span>
-            <span className="flex items-center gap-1"><span className="material-symbols-outlined text-xs">history</span> 취소하기</span>
-            <span className="flex items-center gap-1"><span className="material-symbols-outlined text-xs">search</span> 상태조회</span>
-            <span className="flex items-center gap-1"><span className="material-symbols-outlined text-xs">science</span> 테스트</span>
-          </div>
-        )}
+      </div>
       </div>
     </aside>
   );

@@ -1,6 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Home: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div>
       {/* Hero Section */}
@@ -19,11 +22,17 @@ const Home: React.FC = () => {
               개발자를 위한 최적의 결제 인프라를 지금 경험하세요.
             </p>
             <div className="flex flex-wrap gap-4">
-              <button className="bg-primary-container text-on-primary-container px-8 py-4 rounded-xl text-lg font-bold shadow-lg hover:opacity-90 transition-all flex items-center gap-2">
+              <button 
+                onClick={() => navigate('/api/payment')}
+                className="bg-primary-container text-on-primary-container px-8 py-4 rounded-xl text-lg font-bold shadow-lg hover:opacity-90 transition-all flex items-center gap-2"
+              >
                 API 시작하기
                 <span className="material-symbols-outlined">arrow_forward</span>
               </button>
-              <button className="bg-surface-container-highest text-on-surface px-8 py-4 rounded-xl text-lg font-bold hover:bg-surface-container-high transition-all flex items-center gap-2">
+              <button 
+                onClick={() => navigate('/playground')}
+                className="bg-surface-container-highest text-on-surface px-8 py-4 rounded-xl text-lg font-bold hover:bg-surface-container-high transition-all flex items-center gap-2"
+              >
                 API 테스트
                 <span className="material-symbols-outlined">terminal</span>
               </button>
@@ -70,12 +79,18 @@ const Home: React.FC = () => {
               <h2 className="text-3xl font-bold tracking-tight mb-4 text-on-surface">개발자가 필요로 하는 모든 기능</h2>
               <p className="text-on-surface-variant max-w-xl">단 몇 줄의 코드로 복잡한 결제 프로세스를 완벽하게 제어하세요.</p>
             </div>
-            <a className="text-primary font-bold flex items-center gap-1 hover:underline" href="#">
+            <button 
+              onClick={() => navigate('/api/payment')}
+              className="text-primary font-bold flex items-center gap-1 hover:underline bg-transparent border-none cursor-pointer"
+            >
               전체 API 명세서 보기 <span className="material-symbols-outlined text-sm">open_in_new</span>
-            </a>
+            </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-2 bg-surface-container-lowest p-8 rounded-2xl hover:bg-primary/5 transition-colors group cursor-pointer border border-transparent hover:border-primary/10">
+            <div 
+              onClick={() => navigate('/api/payment')}
+              className="md:col-span-2 bg-surface-container-lowest p-8 rounded-2xl hover:bg-primary/5 transition-colors group cursor-pointer border border-transparent hover:border-primary/10"
+            >
               <div className="flex justify-between items-start mb-12">
                 <div className="p-3 bg-secondary/10 rounded-xl text-secondary">
                   <span className="material-symbols-outlined text-3xl">payments</span>
@@ -90,7 +105,10 @@ const Home: React.FC = () => {
                 <span className="px-3 py-1 bg-surface-container text-xs font-semibold rounded-md">Webhooks</span>
               </div>
             </div>
-            <div className="bg-surface-container-lowest p-8 rounded-2xl hover:bg-primary/5 transition-colors group cursor-pointer border border-transparent hover:border-primary/10">
+            <div 
+              onClick={() => navigate('/api/cancel')}
+              className="bg-surface-container-lowest p-8 rounded-2xl hover:bg-primary/5 transition-colors group cursor-pointer border border-transparent hover:border-primary/10"
+            >
               <div className="flex justify-between items-start mb-12">
                 <div className="p-3 bg-error/10 rounded-xl text-error">
                   <span className="material-symbols-outlined text-3xl">history_toggle_off</span>
@@ -99,7 +117,10 @@ const Home: React.FC = () => {
               <h3 className="text-xl font-bold mb-3 text-on-surface">취소 API</h3>
               <p className="text-sm text-on-surface-variant leading-relaxed">부분 취소, 전액 취소, 당일 취소 등 유연한 환불 정책을 코드 한 줄로 처리할 수 있습니다.</p>
             </div>
-            <div className="bg-surface-container-lowest p-8 rounded-2xl hover:bg-primary/5 transition-colors group cursor-pointer border border-transparent hover:border-primary/10">
+            <div 
+              onClick={() => navigate('/api/status')}
+              className="bg-surface-container-lowest p-8 rounded-2xl hover:bg-primary/5 transition-colors group cursor-pointer border border-transparent hover:border-primary/10"
+            >
               <div className="flex justify-between items-start mb-12">
                 <div className="p-3 bg-tertiary/10 rounded-xl text-tertiary">
                   <span className="material-symbols-outlined text-3xl">manage_search</span>
@@ -108,7 +129,10 @@ const Home: React.FC = () => {
               <h3 className="text-xl font-bold mb-3 text-on-surface">상태조회</h3>
               <p className="text-sm text-on-surface-variant leading-relaxed">실시간 결제 상태 트래킹을 통해 누락 없는 데이터 동기화를 보장합니다.</p>
             </div>
-            <div className="md:col-span-2 bg-surface-container-lowest p-8 rounded-2xl hover:bg-primary/5 transition-colors group cursor-pointer border border-transparent hover:border-primary/10">
+            <div 
+              onClick={() => navigate('/playground')}
+              className="md:col-span-2 bg-surface-container-lowest p-8 rounded-2xl hover:bg-primary/5 transition-colors group cursor-pointer border border-transparent hover:border-primary/10"
+            >
               <div className="flex flex-col md:flex-row gap-8 items-center">
                 <div className="flex-1">
                   <div className="p-3 bg-primary/10 rounded-xl text-primary w-fit mb-6">
@@ -124,22 +148,6 @@ const Home: React.FC = () => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-24 bg-primary-container relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full opacity-10">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl"></div>
-        </div>
-        <div className="max-w-screen-xl mx-auto px-8 text-center relative z-10">
-          <h2 className="text-4xl md:text-5xl font-extrabold text-on-primary-container mb-8">지금 바로 결제 연동을 시작하세요</h2>
-          <p className="text-on-primary-container/80 text-xl mb-12 max-w-2xl mx-auto">간단한 가입만으로 API 키를 발급받고, 샌드박스 환경에서 즉시 테스트할 수 있습니다.</p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button className="bg-white text-primary px-10 py-4 rounded-xl text-lg font-bold shadow-xl hover:bg-surface-container-lowest transition-all scale-100 hover:scale-105 active:scale-95">대시보드 바로가기</button>
-            <button className="bg-primary/20 backdrop-blur-md text-on-primary-container border border-white/20 px-10 py-4 rounded-xl text-lg font-bold hover:bg-primary/30 transition-all">연동 문의하기</button>
           </div>
         </div>
       </section>
