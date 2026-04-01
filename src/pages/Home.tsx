@@ -1,6 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Home: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div>
       {/* Hero Section */}
@@ -19,12 +22,27 @@ const Home: React.FC = () => {
               개발?��? ?�한 최적??결제 ?�프?��? 지�?경험?�세??
             </p>
             <div className="flex flex-wrap gap-4">
+<<<<<<< HEAD
               <button className="bg-primary-container text-on-primary-container px-8 py-4 rounded-xl text-lg font-bold shadow-lg hover:opacity-90 transition-all flex items-center gap-2">
                 API ?�작?�기
                 <span className="material-symbols-outlined">arrow_forward</span>
               </button>
               <button className="bg-surface-container-highest text-on-surface px-8 py-4 rounded-xl text-lg font-bold hover:bg-surface-container-high transition-all flex items-center gap-2">
                 API ?�스??
+=======
+              <button 
+                onClick={() => navigate('/api/payment')}
+                className="bg-primary-container text-on-primary-container px-8 py-4 rounded-xl text-lg font-bold shadow-lg hover:opacity-90 transition-all flex items-center gap-2"
+              >
+                API 시작하기
+                <span className="material-symbols-outlined">arrow_forward</span>
+              </button>
+              <button 
+                onClick={() => navigate('/playground')}
+                className="bg-surface-container-highest text-on-surface px-8 py-4 rounded-xl text-lg font-bold hover:bg-surface-container-high transition-all flex items-center gap-2"
+              >
+                API 테스트
+>>>>>>> 6d56124182bb8ae4c5247dbb08b4b43dcd1055a6
                 <span className="material-symbols-outlined">terminal</span>
               </button>
             </div>
@@ -70,12 +88,24 @@ const Home: React.FC = () => {
               <h2 className="text-3xl font-bold tracking-tight mb-4 text-on-surface">개발?��? ?�요�??�는 모든 기능</h2>
               <p className="text-on-surface-variant max-w-xl">??�?줄의 코드�?복잡??결제 ?�로?�스�??�벽?�게 ?�어?�세??</p>
             </div>
+<<<<<<< HEAD
             <a className="text-primary font-bold flex items-center gap-1 hover:underline" href="#">
               ?�체 API 명세??보기 <span className="material-symbols-outlined text-sm">open_in_new</span>
             </a>
+=======
+            <button 
+              onClick={() => navigate('/api/payment')}
+              className="text-primary font-bold flex items-center gap-1 hover:underline bg-transparent border-none cursor-pointer"
+            >
+              전체 API 명세서 보기 <span className="material-symbols-outlined text-sm">open_in_new</span>
+            </button>
+>>>>>>> 6d56124182bb8ae4c5247dbb08b4b43dcd1055a6
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-2 bg-surface-container-lowest p-8 rounded-2xl hover:bg-primary/5 transition-colors group cursor-pointer border border-transparent hover:border-primary/10">
+            <div 
+              onClick={() => navigate('/api/payment')}
+              className="md:col-span-2 bg-surface-container-lowest p-8 rounded-2xl hover:bg-primary/5 transition-colors group cursor-pointer border border-transparent hover:border-primary/10"
+            >
               <div className="flex justify-between items-start mb-12">
                 <div className="p-3 bg-secondary/10 rounded-xl text-secondary">
                   <span className="material-symbols-outlined text-3xl">payments</span>
@@ -90,7 +120,10 @@ const Home: React.FC = () => {
                 <span className="px-3 py-1 bg-surface-container text-xs font-semibold rounded-md">Webhooks</span>
               </div>
             </div>
-            <div className="bg-surface-container-lowest p-8 rounded-2xl hover:bg-primary/5 transition-colors group cursor-pointer border border-transparent hover:border-primary/10">
+            <div 
+              onClick={() => navigate('/api/cancel')}
+              className="bg-surface-container-lowest p-8 rounded-2xl hover:bg-primary/5 transition-colors group cursor-pointer border border-transparent hover:border-primary/10"
+            >
               <div className="flex justify-between items-start mb-12">
                 <div className="p-3 bg-error/10 rounded-xl text-error">
                   <span className="material-symbols-outlined text-3xl">history_toggle_off</span>
@@ -99,7 +132,10 @@ const Home: React.FC = () => {
               <h3 className="text-xl font-bold mb-3 text-on-surface">취소 API</h3>
               <p className="text-sm text-on-surface-variant leading-relaxed">부�?취소, ?�액 취소, ?�일 취소 ???�연???�불 ?�책??코드 ??줄로 처리?????�습?�다.</p>
             </div>
-            <div className="bg-surface-container-lowest p-8 rounded-2xl hover:bg-primary/5 transition-colors group cursor-pointer border border-transparent hover:border-primary/10">
+            <div 
+              onClick={() => navigate('/api/status')}
+              className="bg-surface-container-lowest p-8 rounded-2xl hover:bg-primary/5 transition-colors group cursor-pointer border border-transparent hover:border-primary/10"
+            >
               <div className="flex justify-between items-start mb-12">
                 <div className="p-3 bg-tertiary/10 rounded-xl text-tertiary">
                   <span className="material-symbols-outlined text-3xl">manage_search</span>
@@ -108,7 +144,10 @@ const Home: React.FC = () => {
               <h3 className="text-xl font-bold mb-3 text-on-surface">?�태조회</h3>
               <p className="text-sm text-on-surface-variant leading-relaxed">?�시�?결제 ?�태 ?�래?�을 ?�해 ?�락 ?�는 ?�이???�기?��? 보장?�니??</p>
             </div>
-            <div className="md:col-span-2 bg-surface-container-lowest p-8 rounded-2xl hover:bg-primary/5 transition-colors group cursor-pointer border border-transparent hover:border-primary/10">
+            <div 
+              onClick={() => navigate('/playground')}
+              className="md:col-span-2 bg-surface-container-lowest p-8 rounded-2xl hover:bg-primary/5 transition-colors group cursor-pointer border border-transparent hover:border-primary/10"
+            >
               <div className="flex flex-col md:flex-row gap-8 items-center">
                 <div className="flex-1">
                   <div className="p-3 bg-primary/10 rounded-xl text-primary w-fit mb-6">
@@ -127,6 +166,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
+<<<<<<< HEAD
 
       {/* CTA Section */}
       <section className="py-24 bg-primary-container relative overflow-hidden">
@@ -143,6 +183,8 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
+=======
+>>>>>>> 6d56124182bb8ae4c5247dbb08b4b43dcd1055a6
     </div>
   );
 };

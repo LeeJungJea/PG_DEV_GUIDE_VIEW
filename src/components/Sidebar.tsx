@@ -70,7 +70,7 @@ const Sidebar: React.FC = () => {
 
       {/* Profile / Bottom Area */}
       <div className="p-4 border-t border-zinc-50 space-y-4">
-        {isAdminPath ? (
+        {isAdminPath && (
           <div className="bg-zinc-50 dark:bg-zinc-900/50 p-3 rounded-2xl flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-zinc-200 overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
               <span className="material-symbols-outlined text-zinc-500">person</span>
@@ -80,6 +80,7 @@ const Sidebar: React.FC = () => {
               <p className="text-[10px] text-zinc-500 truncate">{user?.email ?? 'admin@cjone.com'}</p>
             </div>
           </div>
+<<<<<<< HEAD
         ) : (
           <p className="px-3 text-[10px] text-zinc-400 uppercase tracking-widest font-bold">
             Documentation
@@ -94,6 +95,8 @@ const Sidebar: React.FC = () => {
             <span className="flex items-center gap-1"><span className="material-symbols-outlined text-xs">search</span> ?�태조회</span>
             <span className="flex items-center gap-1"><span className="material-symbols-outlined text-xs">science</span> ?�스??/span>
           </div>
+=======
+>>>>>>> 6d56124182bb8ae4c5247dbb08b4b43dcd1055a6
         )}
       </div>
     </aside>
