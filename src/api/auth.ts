@@ -1,4 +1,4 @@
-import axios from 'axios';
+﻿import axios from 'axios';
 import { AUTH_BASE_URL } from './index';
 
 export interface LoginPayload {
@@ -18,8 +18,9 @@ export interface LoginResponseData {
 export async function login(payload: LoginPayload): Promise<LoginResponseData> {
   const response = await axios.post(`${AUTH_BASE_URL}/login`, payload);
   if (!response.data?.data) {
-    throw new Error(response.data?.message ?? '로그???�답??처리?????�습?�다.');
+    throw new Error(response.data?.message ?? '濡쒓렇???묐떟??泥섎━?????놁뒿?덈떎.');
   }
 
   return response.data.data as LoginResponseData;
 }
+

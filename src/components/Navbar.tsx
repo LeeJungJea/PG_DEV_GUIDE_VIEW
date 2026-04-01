@@ -1,5 +1,5 @@
-﻿import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import LoginDialog from './LoginDialog';
 import { useAuthStore } from '../hooks/useAuth';
 
@@ -11,6 +11,8 @@ const Navbar: React.FC = () => {
     isLoginOpen: state.isLoginOpen,
     setLoginOpen: state.setLoginOpen
   }));
+
+  const navigate = useNavigate();
 
   const isActive = (path: string) => {
     if (path === '/' && location.pathname === '/') return true;
@@ -87,6 +89,7 @@ const Navbar: React.FC = () => {
                 className="text-primary hover:text-primary/80 transition-colors text-sm font-black px-2 py-2"
                 onClick={() => {
                   logout();
+                  navigate('/');
                 }}
               >
                 로그아웃

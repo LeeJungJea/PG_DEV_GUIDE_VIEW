@@ -1,111 +1,52 @@
-import React from 'react';
+﻿import React from 'react';
 
 const CancelDoc: React.FC = () => {
   return (
-    <div className="max-w-5xl">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <span className="bg-primary/10 text-primary px-3 py-1 rounded text-[10px] font-bold tracking-widest uppercase italic">Standard API</span>
-            <span className="text-zinc-400 text-sm">v1.2.0</span>
-          </div>
-          <h1 className="text-4xl lg:text-5xl font-extrabold tracking-tight text-on-surface font-headline leading-tight">취소?�기</h1>
-          <p className="text-lg text-zinc-600 max-w-2xl leading-relaxed">
-            ?�인??결제 건에 ?�??취소 ?�는 ?�불???�청?�니?? 가맹점 주문 번호�?기반?�로 ?�당 PG?�에 취소 명령???�달?�니??
-          </p>
+    <div className="max-w-4xl">
+      <header className="mb-12">
+        <div className="flex items-center gap-3 mb-4">
+          <span className="px-3 py-1 bg-primary/10 text-primary font-bold rounded text-xs tracking-widest uppercase">POST</span>
+          <code className="text-sm font-medium text-zinc-500">/v1/payments/cancel</code>
         </div>
-      </div>
+        <h1 className="text-4xl font-black text-zinc-900 mb-6 tracking-tight font-headline">취소하기</h1>
+        <p className="text-lg text-zinc-600 leading-relaxed mb-8">
+          승인된 결제 건을 취소하거나 환불 처리합니다. 부분 취소와 전체 취소를 모두 지원하며, 취소 사유와 함께 요청 시 즉시 처리됩니다.
+        </p>
+      </header>
 
-      {/* API Definition */}
-      <div className="mb-12">
-        <div className="bg-surface-container-low rounded-xl p-6 flex items-center gap-4 border-none shadow-inner bg-zinc-50">
-          <span className="bg-[#0058bc] text-white px-3 py-1 rounded text-xs font-bold">POST</span>
-          <code className="text-zinc-800 font-mono text-sm">/api/pay/cancel</code>
+      <section className="mb-16">
+        <h2 className="text-xl font-black mb-6 text-zinc-900 flex items-center gap-2">
+          <span className="w-1.5 h-6 bg-primary rounded-full"></span>
+          취소 파라미터
+        </h2>
+        <div className="overflow-hidden rounded-2xl bg-white border border-zinc-100 shadow-sm leading-relaxed">
+          <table className="w-full text-left text-sm border-collapse">
+            <thead className="bg-zinc-50/50 text-zinc-500 font-bold uppercase text-[10px] tracking-widest">
+              <tr>
+                <th className="px-6 py-4">필드명</th>
+                <th className="px-6 py-4">타입</th>
+                <th className="px-6 py-4">설명</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-50">
+              <tr>
+                <td className="px-6 py-5 font-mono text-primary font-bold">payment_id</td>
+                <td className="px-6 py-5 text-zinc-400">String</td>
+                <td className="px-6 py-5 text-zinc-600 font-medium">취소할 결제의 고유 ID</td>
+              </tr>
+              <tr>
+                <td className="px-6 py-5 font-mono text-primary font-bold">cancel_amount</td>
+                <td className="px-6 py-5 text-zinc-400">Number</td>
+                <td className="px-6 py-5 text-zinc-600 font-medium">취소할 금액</td>
+              </tr>
+              <tr>
+                <td className="px-6 py-5 font-mono text-primary font-bold">reason</td>
+                <td className="px-6 py-5 text-zinc-400">String</td>
+                <td className="px-6 py-5 text-zinc-600 font-medium">취소 사유</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        {/* Left Column */}
-        <div className="lg:col-span-7 space-y-12">
-          <section>
-            <h2 className="text-2xl font-bold mb-6 text-on-surface flex items-center gap-2">
-              <span className="w-1.5 h-6 bg-primary rounded-full"></span>
-              ?�청 ?�라미터
-            </h2>
-            <div className="overflow-hidden rounded-xl bg-white shadow-sm border border-zinc-100">
-              <table className="w-full text-left text-sm border-collapse">
-                <thead className="bg-zinc-50 text-zinc-500 font-bold uppercase text-[10px]">
-                  <tr>
-                    <th className="px-6 py-4">?�라미터</th>
-                    <th className="px-6 py-4">?�??/th>
-                    <th className="px-6 py-4">?�명</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-100 italic">
-                  <tr>
-                    <td className="px-6 py-4 font-mono text-primary font-bold">orderId</td>
-                    <td className="px-6 py-4 text-zinc-400">string</td>
-                    <td className="px-6 py-4">취소??가맹점 주문 번호 <span className="text-error text-[10px] font-bold ml-1 uppercase tracker-tighter">Required</span></td>
-                  </tr>
-                  <tr>
-                    <td className="px-6 py-4 font-mono text-primary font-bold">cancelAmount</td>
-                    <td className="px-6 py-4 text-zinc-400">int</td>
-                    <td className="px-6 py-4">취소 ?�청 금액 <span className="text-error text-[10px] font-bold ml-1 uppercase tracker-tighter">Required</span></td>
-                  </tr>
-                  <tr>
-                    <td className="px-6 py-4 font-mono text-primary font-bold">cancelReason</td>
-                    <td className="px-6 py-4 text-zinc-400">string</td>
-                    <td className="px-6 py-4">취소 ?�유 (기본�? "고객 변??)</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
-        </div>
-
-        {/* Right Column */}
-        <div className="lg:col-span-5">
-          <div className="sticky top-24 space-y-6">
-            <div className="bg-inverse-surface rounded-xl overflow-hidden shadow-2xl">
-              <div className="bg-[#3e3e3f] px-4 py-2 text-xs text-zinc-400 font-bold uppercase tracking-wider">
-                Response JSON
-              </div>
-              <pre className="p-6 text-sm font-mono leading-relaxed text-zinc-300 overflow-x-auto">
-                {`{
-  "orderId": "CJ_ORD_ABC123",
-  "paymentMethodId": "kakaoPay",
-  "status": "CANCELED",
-  "cancelAmount": 15000,
-  "remainAmount": 0,
-  "canceledAt": "2024-10-27T15:30:00",
-  "paymentId": "TID_9921_AF02"
-}`}
-              </pre>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Important Notes */}
-      <section className="p-8 bg-primary/5 rounded-2xl border border-primary/10 mt-12">
-        <div className="flex items-center gap-3 mb-4 text-primary">
-          <span className="material-symbols-outlined">info</span>
-          <h3 className="font-bold text-lg">주의?�항</h3>
-        </div>
-        <ul className="space-y-3 text-zinc-600 text-sm leading-relaxed">
-          <li className="flex gap-2">
-            <span className="text-primary font-bold">01.</span>
-            가?�계�?결제 건의 경우, ?�???�버 ?�업 ?�간(23:50 ~ 00:10)?�는 ?�시�??�불??지?�될 ???�습?�다.
-          </li>
-          <li className="flex gap-2">
-            <span className="text-primary font-bold">02.</span>
-            카드 결제 취소??카드???�책???�라 ?�업??기�? 3~5?�이 ?�요?????�습?�다.
-          </li>
-          <li className="flex gap-2">
-            <span className="text-primary font-bold">03.</span>
-            ?��? 취소 ?�료??건에 ?�??중복 취소 ?�청 ??<code>ALREADY_CANCELLED</code> ?�러가 반환?�니??
-          </li>
-        </ul>
       </section>
     </div>
   );

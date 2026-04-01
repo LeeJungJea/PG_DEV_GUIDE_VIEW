@@ -1,89 +1,65 @@
-import { create } from 'zustand';
+﻿import { create } from 'zustand';
 import { login as loginRequest, LoginPayload } from '../api/auth';
 
-const STORAGE_KEY = 'pg-dev-guide-auth';
-
-export interface AuthUser {
+interface User {
   username: string;
   email: string;
   role: string;
 }
 
-interface AuthPersisted {
-  token?: string;
-  expiresAt?: string;
-  user?: AuthUser;
-}
-
-interface AuthState extends AuthPersisted {
+interface AuthState {
+  user: User | undefined;
   loading: boolean;
-  error?: string;
+  error: string | undefined;
   isLoginOpen: boolean;
   login: (payload: LoginPayload) => Promise<void>;
   logout: () => void;
   setLoginOpen: (open: boolean) => void;
 }
 
-const readStoredState = (): AuthPersisted => {
-  if (typeof window === 'undefined') {
-    return {};
-  }
+const STORAGE_KEY = 'auth_state';
 
+const getInitialState = (): Partial<AuthState> => {
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : {};
+    const persisted = localStorage.getItem(STORAGE_KEY);
+    return persisted ? JSON.parse(persisted) : {};
   } catch {
     return {};
   }
 };
 
-const persistState = (state: AuthPersisted) => {
-  if (typeof window === 'undefined') {
-    return;
-  }
-
-  if (state.token) {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } else {
-    window.localStorage.removeItem(STORAGE_KEY);
-  }
+const persistState = (state: Partial<AuthState>) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 };
 
-export const useAuthStore = create<AuthState>((set) => {
-  const stored = readStoredState();
-
-  return {
-    ...stored,
-    loading: false,
-    error: undefined,
-    isLoginOpen: false,
-    login: async (payload) => {
-      set({ loading: true, error: undefined });
-      try {
-        const response = await loginRequest(payload);
-        const nextState: AuthPersisted = {
-          token: response.accessToken,
-          expiresAt: response.expiresAt,
-          user: {
-            username: response.username,
-            email: response.email,
-            role: response.role,
-          },
-        };
-        set({ ...nextState, error: undefined });
-        persistState(nextState);
-      } catch (err) {
-        const message = err instanceof Error ? err.message : '로그?�에 ?�패?�습?�다.';
-        set({ error: message });
-        throw err;
-      } finally {
-        set({ loading: false });
-      }
-    },
-    logout: () => {
-      set({ token: undefined, expiresAt: undefined, user: undefined, error: undefined });
-      persistState({});
-    },
-    setLoginOpen: (open) => set({ isLoginOpen: open }),
-  };
-});
+export const useAuthStore = create<AuthState>((set) => ({
+  user: undefined,
+  loading: false,
+  error: undefined,
+  isLoginOpen: false,
+  ...getInitialState(),
+  login: async (payload: LoginPayload) => {
+    set({ loading: true, error: undefined });
+    try {
+      const response = await loginRequest(payload);
+      const user = {
+        username: response.username,
+        email: response.email,
+        role: response.role,
+      };
+      set({ user, loading: false });
+      persistState({ user });
+      localStorage.setItem('token', response.accessToken);
+    } catch (err: any) {
+      const message = err.response?.data?.message || '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.';
+      set({ error: message, loading: false });
+      throw err;
+    }
+  },
+  logout: () => {
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem('token');
+    set({ user: undefined, error: undefined });
+  },
+  setLoginOpen: (open: boolean) => set({ isLoginOpen: open }),
+}));

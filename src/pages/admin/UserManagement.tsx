@@ -1,241 +1,74 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 
 interface Member {
   id: string;
   name: string;
   initial: string;
   email: string;
-  status: '?�성' | '?��?';
+  status: '활성' | '정지';
   role: string;
-  phone?: string;
-  roles?: { name: string; desc: string; active: boolean }[];
-  activityLog?: { title: string; date: string }[];
+  lastLogin: string;
 }
 
 const UserManagement: React.FC = () => {
-  const members: Member[] = [
-    { id: 'u1', name: '김철수', initial: '김', email: 'chulsoo.kim@gmail.com', status: '?�성', role: 'Standard User', phone: '010-9876-5432',
-      roles: [{ name: 'API Developer', desc: 'API Key ?�성 �?문서 ?�근 권한', active: true }, { name: 'Billing Manager', desc: '결제 ?�역 조회 �?결제 ?�단 관�?, active: false }],
-      activityLog: [{ title: '로그??, date: '2024.05.21 09:30' }]
-    },
-    { id: 'u2', name: '?�영??, initial: '??, email: 'young.lee@cj.net', status: '?��?', role: 'Merchant Admin', phone: '010-5555-1234',
-      roles: [{ name: 'API Developer', desc: 'API Key ?�성 �?문서 ?�근 권한', active: false }, { name: 'Billing Manager', desc: '결제 ?�역 조회 �?결제 ?�단 관�?, active: true }],
-      activityLog: [{ title: '계정 ?��?', date: '2024.05.19 14:00' }]
-    },
-    { id: 'u3', name: '박�???, initial: '', email: 'jisung.park@dev.io', status: '?�성', role: 'Developer', phone: '010-1234-5678',
-      roles: [{ name: 'API Developer', desc: 'API Key ?�성 �?문서 ?�근 권한', active: true }, { name: 'Billing Manager', desc: '결제 ?�역 조회 �?결제 ?�단 관�?, active: false }],
-      activityLog: [{ title: '비�?번호 변�?, date: '2024.05.20 10:15' }]
-    },
-    { id: 'u4', name: '최유�?, initial: '�?, email: 'yuri.choi@company.com', status: '?�성', role: 'Standard User', phone: '010-7777-8888',
-      roles: [{ name: 'API Developer', desc: 'API Key ?�성 �?문서 ?�근 권한', active: false }, { name: 'Billing Manager', desc: '결제 ?�역 조회 �?결제 ?�단 관�?, active: false }],
-      activityLog: [{ title: '가???�료', date: '2024.05.18 16:20' }]
-    },
-  ];
-
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState('?�체');
-  const [checkedIds, setCheckedIds] = useState<string[]>(['u3']);
-
-  const selected = members.find((m) => m.id === selectedId);
-
-  const toggleCheck = (id: string) => {
-    setCheckedIds((prev) => prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]);
-  };
-
-  const tabs = [
-    { label: '?�체', count: '1,240' },
-    { label: '?�성', count: '1,100' },
-    { label: '비활??, count: '140' },
-  ];
+  const [members] = useState<Member[]>([
+    { id: '1', name: '김철수', initial: 'K', email: 'chulsoo.kim@cj.net', status: '활성', role: '시스템 관리자', lastLogin: '2024-03-27 14:30' },
+    { id: '2', name: '이영희', initial: 'L', email: 'yh.lee@cj.net', status: '활성', role: '운영자', lastLogin: '2024-03-27 11:20' },
+    { id: '3', name: '박지민', initial: 'P', email: 'jimin.park@cj.net', status: '정지', role: '공통 관리자', lastLogin: '2024-03-20 09:15' },
+    { id: '4', name: '최동현', initial: 'C', email: 'dh.choi@cj.net', status: '활성', role: '운영자', lastLogin: '2024-03-26 16:40' },
+  ]);
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 bg-zinc-50/30 -m-8 p-8 min-h-screen">
-      {/* Header with breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-zinc-400">
-        <span className="text-2xl font-black text-zinc-900">?�원관�?/span>
-        <span className="mx-2">|</span>
-        <span>?�용??/span>
-        <span>??/span>
-        <span className="font-medium text-zinc-600">?�체 ?�원 리스??/span>
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-2xl font-black text-zinc-900 mb-2">사용자 관리</h1>
+          <p className="text-sm text-zinc-500 font-medium">시스템에 등록된 관리자 계정을 관리합니다.</p>
+        </div>
+        <button className="bg-zinc-900 text-white px-5 py-2.5 rounded-2xl text-sm font-black shadow-lg hover:bg-black transition-all active:scale-95 flex items-center gap-2">
+          <span className="material-symbols-outlined text-lg">person_add</span>
+          사용자 추가
+        </button>
       </div>
 
-      {/* Tabs & Sort */}
-      <div className="flex items-center justify-between">
-        <div className="flex gap-2">
-          {tabs.map((tab) => (
-            <button
-              key={tab.label}
-              onClick={() => setActiveTab(tab.label)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === tab.label
-                  ? 'bg-white text-primary border-2 border-primary shadow-sm'
-                  : 'bg-white text-zinc-500 border border-zinc-200 hover:border-zinc-400'
-              }`}
-            >
-              {tab.label} ({tab.count})
-            </button>
-          ))}
-        </div>
-        <div className="flex items-center gap-2 bg-white border border-zinc-200 rounded-xl px-3 py-2">
-          <span className="text-xs font-bold text-zinc-500">가?�일 ??/span>
-          <span className="material-symbols-outlined text-xs text-zinc-400">expand_more</span>
-        </div>
-      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {members.map((member) => (
+          <div key={member.id} className="bg-white p-8 rounded-[32px] border border-zinc-100 shadow-sm hover:shadow-xl hover:shadow-zinc-200/50 transition-all group">
+            <div className="flex justify-between items-start mb-6">
+              <div className="w-14 h-14 bg-zinc-50 rounded-2xl flex items-center justify-center text-xl font-black text-zinc-400 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                {member.initial}
+              </div>
+              <span className={`text-[10px] font-black px-2 py-1 rounded-lg uppercase tracking-wider ${
+                member.status === '활성' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+              }`}>
+                {member.status}
+              </span>
+            </div>
+            
+            <div className="mb-6">
+              <h3 className="text-lg font-black text-zinc-900 mb-1">{member.name}</h3>
+              <p className="text-xs text-zinc-400 font-medium truncate">{member.email}</p>
+            </div>
 
-      {/* Table + Detail Drawer */}
-      <div className="flex gap-6">
-        {/* Table */}
-        <div className={`bg-white rounded-2xl border border-zinc-100 shadow-sm overflow-hidden transition-all ${selected ? 'flex-1' : 'w-full'}`}>
-          <table className="w-full text-left">
-            <thead>
-              <tr className="border-b border-zinc-100">
-                <th className="px-5 py-4 w-10">
-                  <div className="w-4 h-4 border-2 border-zinc-300 rounded" />
-                </th>
-                <th className="px-4 py-4 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">?�원?�보</th>
-                <th className="px-4 py-4 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">?�태</th>
-                <th className="px-4 py-4 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">권한</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-50">
-              {members.map((m) => (
-                <tr
-                  key={m.id}
-                  className={`cursor-pointer transition-all ${
-                    selectedId === m.id ? 'bg-primary/5' : 'hover:bg-zinc-50/50'
-                  }`}
-                  onClick={() => setSelectedId(m.id === selectedId ? null : m.id)}
-                >
-                  <td className="px-5 py-5" onClick={(e) => { e.stopPropagation(); toggleCheck(m.id); }}>
-                    <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${
-                      checkedIds.includes(m.id) ? 'bg-primary border-primary' : 'border-zinc-300'
-                    }`}>
-                      {checkedIds.includes(m.id) && <span className="text-white text-[10px]">??/span>}
-                    </div>
-                  </td>
-                  <td className="px-4 py-5">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-black ${
-                        checkedIds.includes(m.id) ? 'bg-primary text-white' : 'bg-zinc-200 text-zinc-600'
-                      }`}>
-                        {m.initial || m.name[0]}
-                      </div>
-                      <div>
-                        <p className={`text-sm font-bold leading-none mb-0.5 ${checkedIds.includes(m.id) ? 'text-primary' : 'text-zinc-900'}`}>{m.name}</p>
-                        <p className={`text-xs ${checkedIds.includes(m.id) ? 'text-primary/70' : 'text-zinc-400'}`}>{m.email}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-5">
-                    <span className={`text-[11px] font-bold px-2.5 py-1 rounded-lg ${
-                      m.status === '?�성' ? 'bg-blue-50 text-blue-600' : 'bg-red-50 text-red-500'
-                    }`}>
-                      {m.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-5 text-sm text-zinc-600 font-medium">{m.role}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="p-5 border-t border-zinc-50 text-xs text-zinc-400 font-medium">
-            �?1,240�?�?1-20 ?�시
-          </div>
-        </div>
+            <div className="space-y-3 pt-6 border-t border-zinc-50">
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] text-zinc-400 font-bold uppercase">권한</span>
+                <span className="text-[11px] font-black text-zinc-900">{member.role}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] text-zinc-400 font-bold uppercase">최근 접속</span>
+                <span className="text-[11px] font-medium text-zinc-500">{member.lastLogin.split(' ')[0]}</span>
+              </div>
+            </div>
 
-        {/* Detail Sidebar */}
-        {selected && (
-          <div className="w-[360px] shrink-0 bg-white rounded-2xl border border-zinc-100 shadow-sm p-8 space-y-6 animate-in slide-in-from-right-4 duration-300">
-            <div className="flex justify-between items-start">
-              <h3 className="text-lg font-black text-zinc-900">?�원 ?�세 ?�보</h3>
-              <button onClick={() => setSelectedId(null)} className="text-zinc-400 hover:text-zinc-600 transition-colors">
-                <span className="material-symbols-outlined">close</span>
+            <div className="flex gap-3 pt-6">
+              <button className="flex-1 py-3 text-xs font-bold text-zinc-500 bg-zinc-50 rounded-xl hover:bg-zinc-100 transition-colors">수정</button>
+              <button className="w-12 py-3 flex items-center justify-center bg-zinc-50 text-zinc-400 rounded-xl hover:text-red-500 transition-colors">
+                <span className="material-symbols-outlined text-lg">delete</span>
               </button>
             </div>
-            <p className="text-xs text-zinc-400 -mt-4">?�원 ?�보�??�정?�고 권한??관리합?�다.</p>
-
-            {/* Profile */}
-            <div className="flex flex-col items-center py-4">
-              <div className="w-20 h-20 rounded-full bg-zinc-200 flex items-center justify-center mb-3 relative">
-                <span className="material-symbols-outlined text-3xl text-zinc-400">person</span>
-                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-                  <span className="material-symbols-outlined text-white text-xs">photo_camera</span>
-                </div>
-              </div>
-              <h4 className="text-lg font-black text-zinc-900">{selected.name}</h4>
-              <p className="text-xs text-zinc-400 mb-2">{selected.email}</p>
-              <div className="flex gap-2">
-                <span className="text-[10px] font-bold bg-zinc-100 text-zinc-600 px-2 py-0.5 rounded">{selected.role}</span>
-                <span className="text-[10px] font-bold bg-green-50 text-green-600 px-2 py-0.5 rounded">Email Verified</span>
-              </div>
-            </div>
-
-            {/* Basic Info */}
-            <div className="space-y-4">
-              <h5 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">기본 ?�보</h5>
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-zinc-600">?�명</label>
-                <input className="w-full bg-zinc-50 rounded-xl px-4 py-2.5 text-sm outline-none" defaultValue={selected.name} />
-              </div>
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-zinc-600">?�락�?/label>
-                <input className="w-full bg-zinc-50 rounded-xl px-4 py-2.5 text-sm outline-none" defaultValue={selected.phone} />
-              </div>
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-zinc-600">?�태 ?�정</label>
-                <select className="w-full bg-zinc-50 rounded-xl px-4 py-2.5 text-sm outline-none appearance-none">
-                  <option>?�상 (?�성)</option>
-                  <option>?��?</option>
-                  <option>?�퇴</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Role Management */}
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <h5 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">권한 �?Role 관�?/h5>
-                <button className="text-[11px] font-bold text-primary">??�� 추�?</button>
-              </div>
-              {selected.roles?.map((r, i) => (
-                <div key={i} className="flex items-center justify-between p-3 bg-zinc-50 rounded-xl">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-zinc-200 flex items-center justify-center">
-                      <span className="material-symbols-outlined text-sm text-zinc-500">{r.active ? 'code' : 'payments'}</span>
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold text-zinc-900">{r.name}</p>
-                      <p className="text-[10px] text-zinc-400">{r.desc}</p>
-                    </div>
-                  </div>
-                  <div className={`w-5 h-5 rounded-full flex items-center justify-center ${r.active ? 'bg-primary' : 'border-2 border-zinc-300'}`}>
-                    {r.active && <span className="text-white text-[10px]">??/span>}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Activity Log */}
-            <div className="space-y-3">
-              <h5 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">최근 ?�동 로그</h5>
-              {selected.activityLog?.map((log, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-primary" />
-                  <div>
-                    <p className="text-xs font-bold text-zinc-700">{log.title}</p>
-                    <p className="text-[10px] text-zinc-400">{log.date}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-3 pt-2">
-              <button className="flex-1 py-3 text-sm font-bold text-zinc-600 border border-zinc-200 rounded-xl hover:bg-zinc-50 transition-all">변�?취소</button>
-              <button className="flex-1 py-3 text-sm font-bold text-white bg-primary rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all active:scale-95">?�?�하�?/button>
-            </div>
           </div>
-        )}
+        ))}
       </div>
     </div>
   );
