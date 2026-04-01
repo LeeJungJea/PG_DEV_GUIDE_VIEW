@@ -70,7 +70,7 @@ const Sidebar: React.FC = () => {
 
       {/* Profile / Bottom Area */}
       <div className="p-4 border-t border-zinc-50 space-y-4">
-        {isAdminPath ? (
+        {isAdminPath && (
           <div className="bg-zinc-50 dark:bg-zinc-900/50 p-3 rounded-2xl flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-zinc-200 overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
               <span className="material-symbols-outlined text-zinc-500">person</span>
@@ -81,7 +81,6 @@ const Sidebar: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
       </div>
     </aside>
   );
