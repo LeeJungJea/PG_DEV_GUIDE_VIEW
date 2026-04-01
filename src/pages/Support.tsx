@@ -13,7 +13,7 @@ const Support: React.FC = () => {
       {/* Hero Section / Header */}
       <section className="mb-12">
         <h1 className="text-4xl font-extrabold tracking-tight text-on-surface mb-2 font-headline">지원 센터</h1>
-        <p className="text-zinc-500 text-lg max-w-2xl">기술적인 문제나 궁금한 점이 있으신가요? CJ ONE PG 개발팀이 신속하게 답변해 드립니다.</p>
+        <p className="text-zinc-500 text-lg max-w-2xl">기술적인 문제나 궁금한 점이 있으신가요? CJ PG 개발팀이 신속하게 답변해 드립니다.</p>
       </section>
 
       {/* Two Column Layout */}

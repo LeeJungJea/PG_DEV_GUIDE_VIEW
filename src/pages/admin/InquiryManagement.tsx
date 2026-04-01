@@ -21,7 +21,7 @@ const InquiryManagement: React.FC = () => {
       id: '#29405', title: '결제 모듈 연동 중 403 에러 발생 문의',
       preview: 'API Key를 발급받아 환경 변수에 설정했으나 지속적으...',
       author: '김철수', authorId: 'ks_kim', date: '2024.05.24 14:20', status: '접수', isNew: true,
-      category: '기술 지원 > API 연동', detail: '안녕하세요. CJ ONE PG 연동을 진행 중인 개발자 김철수입니다.\n현재 가이드 문서에 따라 API Key를 발급받고 헤더에 x-api-key 값을 포함하여 요청을 보내고 있습니다. 하지만 로컬 환경과 테스트 서버 모두에서 지속적으로 403 Forbidden 에러가 반환되고 있습니다.\n발급받은 키의 권한 설정이나 IP 화이트리스트 등록이 필요한지 확인 부탁드립니다.',
+      category: '기술 지원 > API 연동', detail: '안녕하세요. CJ PG 연동을 진행 중인 개발자 김철수입니다.\n현재 가이드 문서에 따라 API Key를 발급받고 헤더에 x-api-key 값을 포함하여 요청을 보내고 있습니다. 하지만 로컬 환경과 테스트 서버 모두에서 지속적으로 403 Forbidden 에러가 반환되고 있습니다.\n발급받은 키의 권한 설정이나 IP 화이트리스트 등록이 필요한지 확인 부탁드립니다.',
       codeBlock: 'GET /v1/payments/status HTTP/1.1\nHost: api.cjonepg.co.kr\nX-API-KEY: CJ_*******************\n\n{ "error": "Forbidden", "code": 40301 }',
       attachment: 'error_log_screenshot.png (1.2MB)',
     },
