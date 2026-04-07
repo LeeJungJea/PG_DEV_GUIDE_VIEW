@@ -32,6 +32,16 @@ export interface AdminApiDetail extends AdminApiEntry {
   fields: AdminApiField[];
 }
 
+export interface SaveAdminApiRequest {
+  name: string;
+  method: AdminApiHttpMethod;
+  endpoint: string;
+  version: string;
+  status?: AdminApiEntryStatus;
+  description?: string;
+  fields: Array<Omit<AdminApiField, 'id'>>;
+}
+
 const ADMIN_API_BASE_URL = `${API_ROOT}/admin/api`;
 
 function getAccessToken(): string | null {
@@ -40,6 +50,13 @@ function getAccessToken(): string | null {
   } catch {
     return null;
   }
+}
+
+function getAuthorizedConfig() {
+  const token = getAccessToken();
+  return {
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+  };
 }
 
 function toAdminApiError(error: unknown): Error {
@@ -52,63 +69,39 @@ function toAdminApiError(error: unknown): Error {
     }
 
     if (status === 403) {
-      return new Error(serverMessage ?? '관리자 권한이 없어 API 목록을 조회할 수 없습니다.');
+      return new Error(serverMessage ?? '관리자 권한이 없어 API를 처리할 수 없습니다.');
     }
 
     if (status === 404) {
-      return new Error(serverMessage ?? '관리자 API 경로(/api/admin/api)를 찾을 수 없습니다.');
+      return new Error(serverMessage ?? '관리자 API 경로를 찾을 수 없습니다.');
     }
 
     if (status && status >= 500) {
-      return new Error(serverMessage ?? '관리자 API 서버 오류로 목록 조회에 실패했습니다.');
+      return new Error(serverMessage ?? '관리자 API 서버 오류로 요청 처리에 실패했습니다.');
     }
 
     if (error.request && !error.response) {
       return new Error('API 서버에 연결할 수 없습니다. 서버 주소와 실행 상태를 확인해 주세요.');
     }
 
-    return new Error(serverMessage ?? 'API 목록 조회 중 오류가 발생했습니다.');
+    return new Error(serverMessage ?? '관리자 API 요청 중 오류가 발생했습니다.');
   }
 
-  return error instanceof Error ? error : new Error('API 목록 조회 중 알 수 없는 오류가 발생했습니다.');
+  return error instanceof Error ? error : new Error('관리자 API 요청 중 알 수 없는 오류가 발생했습니다.');
 }
 
-function normalizeAdminApiEntries(payload: unknown): AdminApiEntry[] {
-  if (Array.isArray(payload)) {
-    return payload as AdminApiEntry[];
+function unwrapData<T>(payload: unknown): T {
+  if (payload && typeof payload === 'object' && 'data' in payload) {
+    return (payload as { data: T }).data;
   }
 
-  if (
-    payload &&
-    typeof payload === 'object' &&
-    'data' in payload &&
-    Array.isArray((payload as { data?: unknown }).data)
-  ) {
-    return (payload as { data: AdminApiEntry[] }).data;
-  }
-
-  throw new Error('관리자 API 목록 응답 형식이 올바르지 않습니다.');
-}
-
-function normalizeAdminApiDetail(payload: unknown): AdminApiDetail {
-  if (payload && typeof payload === 'object' && 'data' in payload && (payload as { data?: unknown }).data) {
-    return (payload as { data: AdminApiDetail }).data;
-  }
-
-  if (payload && typeof payload === 'object' && 'id' in payload) {
-    return payload as AdminApiDetail;
-  }
-
-  throw new Error('관리자 API 상세 응답 형식이 올바르지 않습니다.');
+  return payload as T;
 }
 
 export async function fetchAdminApiEntries(): Promise<AdminApiEntry[]> {
   try {
-    const token = getAccessToken();
-    const response = await axios.get(ADMIN_API_BASE_URL, {
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    });
-    return normalizeAdminApiEntries(response.data);
+    const response = await axios.get(ADMIN_API_BASE_URL, getAuthorizedConfig());
+    return unwrapData<AdminApiEntry[]>(response.data);
   } catch (error) {
     throw toAdminApiError(error);
   }
@@ -120,11 +113,26 @@ export async function refreshAdminApiEntries(): Promise<AdminApiEntry[]> {
 
 export async function fetchAdminApiDetail(id: string): Promise<AdminApiDetail> {
   try {
-    const token = getAccessToken();
-    const response = await axios.get(`${ADMIN_API_BASE_URL}/${id}`, {
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    });
-    return normalizeAdminApiDetail(response.data);
+    const response = await axios.get(`${ADMIN_API_BASE_URL}/${id}`, getAuthorizedConfig());
+    return unwrapData<AdminApiDetail>(response.data);
+  } catch (error) {
+    throw toAdminApiError(error);
+  }
+}
+
+export async function createAdminApi(payload: SaveAdminApiRequest): Promise<AdminApiEntry> {
+  try {
+    const response = await axios.post(ADMIN_API_BASE_URL, payload, getAuthorizedConfig());
+    return unwrapData<AdminApiEntry>(response.data);
+  } catch (error) {
+    throw toAdminApiError(error);
+  }
+}
+
+export async function updateAdminApi(id: string, payload: SaveAdminApiRequest): Promise<AdminApiEntry> {
+  try {
+    const response = await axios.put(`${ADMIN_API_BASE_URL}/${id}`, payload, getAuthorizedConfig());
+    return unwrapData<AdminApiEntry>(response.data);
   } catch (error) {
     throw toAdminApiError(error);
   }
