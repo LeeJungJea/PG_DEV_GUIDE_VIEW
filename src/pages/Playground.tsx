@@ -137,6 +137,11 @@ function buildFieldValueMap(
   headerFields: AdminApiField[],
 ) {
   const nextFieldValues = buildInitialFieldValues([...bodyFields, ...pathFields, ...queryFields, ...headerFields]);
+  if ('orderId' in nextFieldValues) {
+    nextFieldValues.orderId = `ORD-${Date.now()}-${Math.floor(Math.random() * 10000)
+      .toString()
+      .padStart(4, '0')}`;
+  }
   nextFieldValues.approvalUrl = getCallbackUrl('success');
   nextFieldValues.cancelUrl = getCallbackUrl('cancel');
   nextFieldValues.failUrl = getCallbackUrl('fail');
