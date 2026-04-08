@@ -244,7 +244,7 @@ const Playground: React.FC = () => {
   }, [selectedApi, bodyFields, pathFields, queryFields, headerFields]);
 
   useEffect(() => {
-    const handleMessage = async (event: MessageEvent<CallbackMessagePayload>) => {
+    const handleMessage = (event: MessageEvent<CallbackMessagePayload>) => {
       const allowedOrigins = new Set([
         window.location.origin,
         new URL(API_ROOT).origin,
@@ -258,57 +258,19 @@ const Playground: React.FC = () => {
         return;
       }
 
-      const orderId = event.data.params.orderId || lastOrderIdRef.current;
       const callbackSnapshot = {
         resultType: event.data.resultType,
         params: event.data.params,
       };
+      const prettyBody = JSON.stringify(callbackSnapshot, null, 2);
 
       setPendingRedirectUrl(undefined);
       setPendingPaymentMethod(undefined);
-
-      if (!orderId) {
-        const prettyBody = JSON.stringify({ callback: callbackSnapshot }, null, 2);
-        setResponseStatus(`CALLBACK ${event.data.resultType.toUpperCase()}`);
-        setResponseBody(prettyBody);
-        setResponseMeta({
-          sizeBytes: new Blob([prettyBody]).size,
-        });
-        return;
-      }
-
-      try {
-        const statusResponse = await axios.get(`${API_ROOT}/v1/payments/status/${encodeURIComponent(orderId)}`);
-        const prettyBody = JSON.stringify(
-          {
-            callback: callbackSnapshot,
-            latestStatus: statusResponse.data,
-          },
-          null,
-          2,
-        );
-
-        setResponseStatus(`CALLBACK ${event.data.resultType.toUpperCase()}`);
-        setResponseBody(prettyBody);
-        setResponseMeta({
-          sizeBytes: new Blob([prettyBody]).size,
-        });
-      } catch (err) {
-        const prettyBody = JSON.stringify(
-          {
-            callback: callbackSnapshot,
-            message: err instanceof Error ? err.message : '상태 재조회에 실패했습니다.',
-          },
-          null,
-          2,
-        );
-
-        setResponseStatus(`CALLBACK ${event.data.resultType.toUpperCase()}`);
-        setResponseBody(prettyBody);
-        setResponseMeta({
-          sizeBytes: new Blob([prettyBody]).size,
-        });
-      }
+      setResponseStatus(`CALLBACK ${event.data.resultType.toUpperCase()}`);
+      setResponseBody(prettyBody);
+      setResponseMeta({
+        sizeBytes: new Blob([prettyBody]).size,
+      });
     };
 
     window.addEventListener('message', handleMessage);
