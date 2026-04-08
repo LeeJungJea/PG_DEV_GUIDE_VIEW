@@ -58,9 +58,35 @@ function stringifyExampleValue(field: AdminApiField) {
   return JSON.stringify(value);
 }
 
-function buildBodyPayload(fields: AdminApiField[]) {
+function parseFieldValue(field: AdminApiField, rawValue?: string): unknown {
+  if (rawValue === undefined || rawValue === '') {
+    return getExampleValue(field);
+  }
+
+  switch (field.fieldType) {
+    case 'Integer':
+    case 'Long':
+    case 'Number': {
+      const numericValue = Number(rawValue);
+      return Number.isNaN(numericValue) ? rawValue : numericValue;
+    }
+    case 'Boolean':
+      return rawValue.toLowerCase() === 'true';
+    case 'Object':
+    case 'Array':
+      try {
+        return JSON.parse(rawValue);
+      } catch {
+        return rawValue;
+      }
+    default:
+      return rawValue;
+  }
+}
+
+function buildBodyPayload(fields: AdminApiField[], fieldValues: FieldValueMap) {
   return fields.reduce<Record<string, unknown>>((acc, field) => {
-    acc[field.fieldName] = getExampleValue(field);
+    acc[field.fieldName] = parseFieldValue(field, fieldValues[field.fieldName]);
     return acc;
   }, {});
 }
@@ -105,11 +131,12 @@ function getCallbackUrl(type: CallbackResultType) {
 }
 
 function buildFieldValueMap(
+  bodyFields: AdminApiField[],
   pathFields: AdminApiField[],
   queryFields: AdminApiField[],
   headerFields: AdminApiField[],
 ) {
-  const nextFieldValues = buildInitialFieldValues([...pathFields, ...queryFields, ...headerFields]);
+  const nextFieldValues = buildInitialFieldValues([...bodyFields, ...pathFields, ...queryFields, ...headerFields]);
   nextFieldValues.approvalUrl = getCallbackUrl('success');
   nextFieldValues.cancelUrl = getCallbackUrl('cancel');
   nextFieldValues.failUrl = getCallbackUrl('fail');
@@ -206,10 +233,10 @@ const Playground: React.FC = () => {
       return;
     }
 
-    setFieldValues(buildFieldValueMap(pathFields, queryFields, headerFields));
+    setFieldValues(buildFieldValueMap(bodyFields, pathFields, queryFields, headerFields));
     setPendingRedirectUrl(undefined);
     setPendingPaymentMethod(undefined);
-  }, [selectedApi, pathFields, queryFields, headerFields]);
+  }, [selectedApi, bodyFields, pathFields, queryFields, headerFields]);
 
   useEffect(() => {
     const handleMessage = async (event: MessageEvent<CallbackMessagePayload>) => {
@@ -350,7 +377,7 @@ const Playground: React.FC = () => {
 
       let payload: unknown = undefined;
       if (bodyFields.length > 0) {
-        payload = buildBodyPayload(bodyFields);
+        payload = buildBodyPayload(bodyFields, fieldValues);
         headers['Content-Type'] = 'application/json';
       }
 
@@ -499,11 +526,11 @@ const Playground: React.FC = () => {
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div className="flex flex-col gap-6">
-          {(pathFields.length > 0 || queryFields.length > 0 || headerFields.length > 0) && (
+          {(bodyFields.length > 0 || pathFields.length > 0 || queryFields.length > 0 || headerFields.length > 0) && (
             <div className="rounded-[28px] border border-zinc-100 bg-white p-6 shadow-sm">
               <h2 className="mb-5 text-lg font-black text-zinc-900">Request</h2>
               <div className="space-y-4">
-                {[...pathFields, ...queryFields, ...headerFields].map((field) => (
+                {[...bodyFields, ...pathFields, ...queryFields, ...headerFields].map((field) => (
                   <div key={`${field.fieldLocation}-${field.fieldName}`} className="grid gap-2">
                     <label className="flex items-center gap-2 text-sm font-black text-zinc-700">
                       <span>{field.fieldName}</span>
