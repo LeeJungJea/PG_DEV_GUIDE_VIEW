@@ -5,9 +5,9 @@ const Support: React.FC = () => {
   const { user, setLoginOpen } = useAuthStore();
 
   const inquiries = [
-    { id: 1, category: '기술 문의', title: 'API 연동 시 401 에러가 발생합니다.', status: '답변완료', date: '2024-03-27' },
-    { id: 2, category: '계정 문의', title: '관리자 계정 비밀번호 초기화 요청', status: '검토중', date: '2024-03-26' },
-    { id: 3, category: '결제 문의', title: '부분 취소 API 응답 필드 확인', status: '답변완료', date: '2024-03-25' },
+    { id: 1, category: 'API 연동 문의', title: 'API 연동 시 401 에러가 발생합니다.', status: '답변완료', date: '2024-03-27' },
+    { id: 2, category: '계정/권한 설정', title: '관리자 계정 비밀번호 초기화 요청', status: '검토중', date: '2024-03-26' },
+    { id: 3, category: '결제/승인 오류', title: '부분 취소 API 응답 필드 확인', status: '답변완료', date: '2024-03-25' },
   ];
 
   if (!user) {
@@ -87,11 +87,12 @@ const Support: React.FC = () => {
               <form className="space-y-6">
                 <div>
                   <label className="text-[10px] font-bold text-white/50 uppercase tracking-widest block mb-2 px-1">카테고리</label>
-                  <select className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-white/30 transition-all">
-                    <option>카테고리를 선택하세요</option>
-                    <option>기술 문의</option>
-                    <option>결제 문의</option>
-                    <option>계정/보안 문의</option>
+                  <select className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-white/30 transition-all">
+                    <option className="text-zinc-900 bg-white">카테고리를 선택하세요</option>
+                    <option className="text-zinc-900 bg-white">결제/승인 오류</option>
+                    <option className="text-zinc-900 bg-white">API 연동 문의</option>
+                    <option className="text-zinc-900 bg-white">계정/권한 설정</option>
+                    <option className="text-zinc-900 bg-white">기타</option>
                   </select>
                 </div>
                 

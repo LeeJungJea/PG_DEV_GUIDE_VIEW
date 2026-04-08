@@ -1,263 +1,433 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  type AdminUserDetail,
+  type AdminUserEntry,
+  fetchAdminUserDetail,
+  fetchAdminUsers,
+} from '../../api/admin';
 
-interface Member {
-  id: string;
-  name: string;
-  initial: string;
-  email: string;
-  status: '활성' | '정지';
-  role: string;
-  phone: string;
-  badges: string[];
-  image?: string;
+type MemberTab = 'ALL' | 'ACTIVE' | 'INACTIVE';
+
+const PAGE_SIZE = 20;
+
+function getInitial(name: string) {
+  return name.trim().charAt(0).toUpperCase() || '?';
+}
+
+function getStatusLabel(status: string) {
+  switch (status) {
+    case 'ACTIVE':
+      return '활성';
+    case 'SUSPENDED':
+      return '정지';
+    case 'WITHDRAWN':
+      return '탈퇴';
+    default:
+      return status;
+  }
+}
+
+function getRoleLabel(role: string) {
+  return role === 'ADMIN' ? '관리자' : '일반 사용자';
 }
 
 const UserManagement: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('전체 (1,240)');
+  const [activeTab, setActiveTab] = useState<MemberTab>('ALL');
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [members, setMembers] = useState<AdminUserEntry[]>([]);
+  const [selectedMember, setSelectedMember] = useState<AdminUserDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDetailLoading, setIsDetailLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const members: Member[] = [
-    { id: '1', name: '김철수', initial: '김', email: 'chulsoo.kim@gmail.com', status: '활성', role: 'Standard User', phone: '010-0000-0000', badges: [] },
-    { id: '2', name: '이영희', initial: '이', email: 'young.lee@cj.net', status: '정지', role: 'Merchant Admin', phone: '010-0000-0000', badges: [] },
-    { id: '3', name: '박지성', initial: '박', email: 'jisung.park@dev.io', status: '활성', role: 'Developer', phone: '010-1234-5678', badges: ['Developer', 'Email Verified'], image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop' },
-    { id: '4', name: '최유리', initial: '최', email: 'yuri.choi@company.com', status: '활성', role: 'Standard User', phone: '010-0000-0000', badges: [] },
+  const statusParam = useMemo<'ACTIVE' | 'INACTIVE' | undefined>(() => {
+    if (activeTab === 'ACTIVE') return 'ACTIVE';
+    if (activeTab === 'INACTIVE') return 'INACTIVE';
+    return undefined;
+  }, [activeTab]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadMembers = async () => {
+      setIsLoading(true);
+      setErrorMessage(null);
+
+      try {
+        const response = await fetchAdminUsers({
+          page,
+          size: PAGE_SIZE,
+          keyword: searchKeyword.trim() || undefined,
+          status: statusParam,
+        });
+
+        if (!isMounted) return;
+
+        setMembers(response.items);
+        setTotalCount(response.totalCount);
+        setTotalPages(response.totalPages);
+      } catch (error) {
+        if (!isMounted) return;
+        setErrorMessage(error instanceof Error ? error.message : '회원 목록을 불러오지 못했습니다.');
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    void loadMembers();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [page, searchKeyword, statusParam]);
+
+  const activeCount = useMemo(() => members.filter((member) => member.status === 'ACTIVE').length, [members]);
+  const inactiveCount = useMemo(() => members.filter((member) => member.status !== 'ACTIVE').length, [members]);
+
+  const tabItems = [
+    { id: 'ALL' as const, label: `전체 (${totalCount})` },
+    { id: 'ACTIVE' as const, label: `활성 (${activeTab === 'ACTIVE' ? totalCount : activeCount})` },
+    { id: 'INACTIVE' as const, label: `비활성 (${activeTab === 'INACTIVE' ? totalCount : inactiveCount})` },
   ];
 
-  const [selectedMember, setSelectedMember] = useState<Member>(members[2]);
+  const openMemberDetail = async (member: AdminUserEntry) => {
+    setIsDetailLoading(true);
+    setErrorMessage(null);
+
+    try {
+      const detail = await fetchAdminUserDetail(member.id);
+      setSelectedMember(detail);
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : '회원 상세 정보를 불러오지 못했습니다.');
+    } finally {
+      setIsDetailLoading(false);
+    }
+  };
+
+  const handleTabChange = (tab: MemberTab) => {
+    setActiveTab(tab);
+    setPage(1);
+    setSelectedMember(null);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchKeyword(value);
+    setPage(1);
+    setSelectedMember(null);
+  };
+
+  const canGoPrev = page > 1;
+  const canGoNext = page < totalPages;
+  const startIndex = totalCount === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
+  const endIndex = totalCount === 0 ? 0 : Math.min(page * PAGE_SIZE, totalCount);
 
   return (
-    <div className="flex flex-1 overflow-hidden bg-[#f9fafb]">
-       {/* Left Content Area */}
-       <div className="flex-1 flex flex-col p-8 overflow-y-auto custom-scrollbar">
-          {/* Header */}
-          <div className="flex justify-between items-end mb-8">
-             <div>
-                <h1 className="text-2xl font-black text-zinc-900">회원관리</h1>
-             </div>
-             
-             {/* Right Search Input placeholder for realism */}
-             <div className="relative">
-                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 text-lg">search</span>
-                <input type="text" placeholder="회원명 등 검색..." className="bg-zinc-100 border-none rounded-full py-2.5 pl-11 pr-4 text-xs font-bold w-64 outline-none focus:ring-2 focus:ring-primary/20" />
-             </div>
+    <div className="flex h-full flex-1 min-h-0 overflow-hidden bg-[#f9fafb]">
+      <div
+        className={`h-full min-h-0 flex-1 flex flex-col p-8 ${
+          selectedMember ? 'overflow-hidden' : 'overflow-y-auto custom-scrollbar'
+        }`}
+      >
+        <div className="mb-8 flex items-end justify-between">
+          <div>
+            <h1 className="text-2xl font-black text-zinc-900">회원관리</h1>
           </div>
 
-          {/* Top Bar Tabs & Search */}
-          <div className="flex justify-between items-center bg-transparent border-b border-transparent mb-6 w-full max-w-4xl">
-             <div className="flex bg-zinc-100/50 rounded-full p-1 shadow-sm border border-zinc-200">
-                {['전체 (1,240)', '활성 (1,100)', '비활성 (140)'].map(tab => (
-                   <button
-                      key={tab}
-                      onClick={() => setActiveTab(tab)}
-                      className={`text-[11px] font-black px-6 py-2.5 rounded-full transition-all ${
-                         activeTab === tab
-                           ? 'border-primary border bg-white text-primary shadow-sm'
-                           : 'text-zinc-400 hover:text-zinc-600'
-                      }`}
-                   >
-                     {tab}
-                   </button>
-                ))}
-             </div>
-             
-             <div className="flex items-center gap-1 bg-white border border-zinc-200 rounded-full px-4 py-2 cursor-pointer shadow-sm">
-                <span className="text-[11px] font-bold text-zinc-500">가입일 순</span>
-                <span className="material-symbols-outlined text-[16px] text-zinc-400">expand_more</span>
-             </div>
+          <div className="relative">
+            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg text-zinc-400">
+              search
+            </span>
+            <input
+              type="text"
+              value={searchKeyword}
+              onChange={(event) => handleSearchChange(event.target.value)}
+              placeholder="회원명, 아이디, 이메일 검색"
+              className="w-72 rounded-full border-none bg-zinc-100 py-2.5 pl-11 pr-4 text-xs font-bold outline-none focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+        </div>
+
+        <div
+          className={`mb-6 flex items-center border-b border-transparent bg-transparent ${
+            selectedMember ? 'max-w-4xl' : 'max-w-none'
+          }`}
+        >
+          <div className="flex rounded-full border border-zinc-200 bg-zinc-100/50 p-1 shadow-sm">
+            {tabItems.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => handleTabChange(tab.id)}
+                className={`rounded-full px-6 py-2.5 text-[11px] font-black transition-all ${
+                  activeTab === tab.id
+                    ? 'border border-primary bg-white text-primary shadow-sm'
+                    : 'text-zinc-400 hover:text-zinc-600'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className={`flex min-h-0 flex-1 flex-col pb-16 ${selectedMember ? 'max-w-4xl' : 'max-w-none'}`}>
+          <div className="grid grid-cols-12 gap-4 rounded-t-2xl border-b border-zinc-200 bg-zinc-50/50 px-6 py-4 text-[11px] font-black tracking-widest text-zinc-400">
+            <div className="col-span-1 flex items-center justify-center">
+              <div className="h-4 w-4 rounded border-2 border-zinc-200" />
+            </div>
+            <div className="col-span-5">회원정보</div>
+            <div className="col-span-3 flex justify-center">상태</div>
+            <div className="col-span-3">권한</div>
           </div>
 
-          {/* List Table */}
-          <div className="bg-transparent flex-1 max-w-4xl pb-32">
-             <div className="grid grid-cols-12 gap-4 px-6 py-4 border-b border-zinc-200 text-[11px] font-black text-zinc-400 tracking-widest bg-zinc-50/50 rounded-t-2xl">
-                <div className="col-span-1 flex items-center justify-center">
-                   <div className="w-4 h-4 border-2 border-zinc-200 rounded"></div>
-                </div>
-                <div className="col-span-5">회원정보</div>
-                <div className="col-span-3 flex justify-center">상태</div>
-                <div className="col-span-3">권한</div>
-             </div>
+          <div className="overflow-hidden rounded-b-2xl border border-t-0 border-zinc-100 bg-white shadow-sm">
+            {isLoading ? (
+              <div className="px-6 py-16 text-center text-sm font-bold text-zinc-400">회원 목록을 불러오는 중입니다.</div>
+            ) : members.length === 0 ? (
+              <div className="px-6 py-16 text-center text-sm font-bold text-zinc-400">표시할 회원이 없습니다.</div>
+            ) : (
+              members.map((member) => {
+                const isSelected = selectedMember?.id === member.id;
+                const statusLabel = getStatusLabel(member.status);
+                const roleLabel = getRoleLabel(member.role);
 
-             <div className="bg-white rounded-b-2xl shadow-sm border border-t-0 border-zinc-100 overflow-hidden">
-                {members.map(member => {
-                   const isSelected = selectedMember.id === member.id;
-                   return (
-                      <div 
-                         key={member.id} 
-                         onClick={() => setSelectedMember(member)}
-                         className={`grid grid-cols-12 gap-4 px-6 py-5 items-center transition-all cursor-pointer border-b border-zinc-50 last:border-0 ${
-                            isSelected ? 'bg-[#fff0f7] border-transparent relative z-10' : 'hover:bg-zinc-50/50'
-                         }`}
+                return (
+                  <div
+                    key={member.id}
+                    onDoubleClick={() => void openMemberDetail(member)}
+                    className={`grid cursor-pointer grid-cols-12 items-center gap-4 border-b border-zinc-50 px-6 py-5 transition-all last:border-0 ${
+                      isSelected ? 'relative z-10 border-transparent bg-[#fff0f7]' : 'hover:bg-zinc-50/50'
+                    }`}
+                  >
+                    <div className="col-span-1 flex items-center justify-center">
+                      <div
+                        className={`flex h-4 w-4 items-center justify-center rounded transition-colors ${
+                          isSelected ? 'border-primary bg-primary text-white' : 'border-2 border-zinc-200 bg-white'
+                        }`}
                       >
-                         <div className="col-span-1 flex items-center justify-center">
-                            <div className={`w-4 h-4 rounded flex items-center justify-center transition-colors ${
-                               isSelected ? 'bg-primary border-primary text-white' : 'border-2 border-zinc-200 bg-white'
-                            }`}>
-                               {isSelected && <span className="material-symbols-outlined text-[12px] font-black">check</span>}
+                        {isSelected ? <span className="material-symbols-outlined text-[12px] font-black">check</span> : null}
+                      </div>
+                    </div>
+
+                    <div className="col-span-5 flex items-center gap-4">
+                      {member.profileImageUrl ? (
+                        <img
+                          src={member.profileImageUrl}
+                          alt={member.name}
+                          className="h-10 w-10 rounded-full border-2 border-white object-cover shadow-sm"
+                        />
+                      ) : (
+                        <div
+                          className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-black ${
+                            isSelected ? 'bg-zinc-800 text-white' : 'bg-red-50 text-zinc-400'
+                          }`}
+                        >
+                          {getInitial(member.name)}
+                        </div>
+                      )}
+                      <div>
+                        <h3 className={`mb-0.5 text-sm font-black ${isSelected ? 'text-primary' : 'text-zinc-800'}`}>
+                          {member.name}
+                        </h3>
+                        <p className="text-[11px] font-bold text-zinc-400">{member.email}</p>
+                      </div>
+                    </div>
+
+                    <div className="col-span-3 flex justify-center">
+                      <span
+                        className={`rounded-md px-3 py-1 text-[10px] font-black tracking-wider ${
+                          member.status === 'ACTIVE' ? 'bg-blue-50 text-blue-500' : 'bg-red-50 text-red-500'
+                        }`}
+                      >
+                        {statusLabel}
+                      </span>
+                    </div>
+
+                    <div className="col-span-3 flex items-center text-xs font-bold text-zinc-600">{roleLabel}</div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          <div className="flex items-center justify-between px-6 py-6 text-[11px] font-bold tracking-wider text-zinc-400">
+            <span>
+              총 {totalCount}명 중 {startIndex}-{endIndex} 표시
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  if (canGoPrev) {
+                    setPage((prev) => prev - 1);
+                    setSelectedMember(null);
+                  }
+                }}
+                disabled={!canGoPrev}
+                className="rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-[11px] font-black text-zinc-500 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                이전
+              </button>
+              <span>
+                {page} / {totalPages}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  if (canGoNext) {
+                    setPage((prev) => prev + 1);
+                    setSelectedMember(null);
+                  }
+                }}
+                disabled={!canGoNext}
+                className="rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-[11px] font-black text-zinc-500 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                다음
+              </button>
+            </div>
+          </div>
+
+          {errorMessage ? <p className="px-6 text-sm font-bold text-red-500">{errorMessage}</p> : null}
+        </div>
+      </div>
+
+      {selectedMember ? (
+        <div className="relative z-50 flex h-full min-h-0 w-[500px] self-stretch flex-col overflow-hidden border-l border-zinc-100 bg-white shadow-[-20px_0_40px_rgb(0,0,0,0.03)]">
+          <div className="z-10 flex items-center justify-between border-b border-zinc-50 bg-white p-8">
+            <div>
+              <h2 className="mb-1 text-xl font-black text-zinc-900">회원 상세 정보</h2>
+              <p className="text-[11px] font-bold text-zinc-400">회원정보와 최근 활동 내역을 확인합니다.</p>
+            </div>
+            <button onClick={() => setSelectedMember(null)} className="text-zinc-300 transition-colors hover:text-zinc-800">
+              <span className="material-symbols-outlined text-2xl">close</span>
+            </button>
+          </div>
+
+          <div className="min-h-0 flex-1 overflow-y-auto px-10 pb-40 custom-scrollbar">
+            {isDetailLoading ? (
+              <div className="py-16 text-center text-sm font-bold text-zinc-400">회원 상세 정보를 불러오는 중입니다.</div>
+            ) : (
+              <>
+                <div className="mb-10 flex flex-col items-center justify-center border-b border-zinc-50 py-10">
+                  <div className="relative mb-5">
+                    {selectedMember.profileImageUrl ? (
+                      <img
+                        src={selectedMember.profileImageUrl}
+                        alt={selectedMember.name}
+                        className="h-24 w-24 rounded-full border-4 border-white object-cover shadow-lg"
+                      />
+                    ) : (
+                      <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-white bg-zinc-100 text-2xl font-black text-zinc-400 shadow-lg">
+                        {getInitial(selectedMember.name)}
+                      </div>
+                    )}
+                  </div>
+                  <h3 className="mb-1 text-2xl font-black text-zinc-900">{selectedMember.name}</h3>
+                  <p className="mb-4 text-sm font-bold text-zinc-500">{selectedMember.email}</p>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    <span className="rounded-full bg-blue-50 px-3 py-1.5 text-[10px] font-black tracking-wider text-blue-500">
+                      {getRoleLabel(selectedMember.role)}
+                    </span>
+                    <span className="rounded-full bg-green-50 px-3 py-1.5 text-[10px] font-black tracking-wider text-green-600">
+                      {getStatusLabel(selectedMember.status)}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mb-10 space-y-6">
+                  <h4 className="text-[11px] font-black uppercase tracking-widest text-zinc-400">기본 정보</h4>
+
+                  <div className="space-y-2">
+                    <label className="px-1 text-[11px] font-bold text-zinc-500">이름</label>
+                    <input
+                      type="text"
+                      value={selectedMember.name}
+                      readOnly
+                      className="w-full rounded-2xl border border-zinc-100 bg-zinc-50 px-5 py-4 text-sm font-bold text-zinc-800 outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="px-1 text-[11px] font-bold text-zinc-500">아이디</label>
+                    <input
+                      type="text"
+                      value={selectedMember.username}
+                      readOnly
+                      className="w-full rounded-2xl border border-zinc-100 bg-zinc-50 px-5 py-4 text-sm font-bold text-zinc-800 outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="px-1 text-[11px] font-bold text-zinc-500">연락처</label>
+                    <input
+                      type="text"
+                      value={selectedMember.phone ?? '-'}
+                      readOnly
+                      className="w-full rounded-2xl border border-zinc-100 bg-zinc-50 px-5 py-4 text-sm font-bold text-zinc-800 outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-12 space-y-6">
+                  <h4 className="text-[11px] font-black uppercase tracking-widest text-zinc-400">계정 정보</h4>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="rounded-3xl border border-zinc-100 bg-zinc-50 p-5">
+                      <p className="mb-2 text-[11px] font-black text-zinc-400">권한</p>
+                      <p className="text-sm font-black text-zinc-900">{getRoleLabel(selectedMember.role)}</p>
+                    </div>
+                    <div className="rounded-3xl border border-zinc-100 bg-zinc-50 p-5">
+                      <p className="mb-2 text-[11px] font-black text-zinc-400">마지막 로그인</p>
+                      <p className="text-sm font-black text-zinc-900">{selectedMember.lastLoginAt ?? '-'}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-6 border-t border-zinc-50 pt-10">
+                  <h4 className="mb-6 text-[11px] font-black uppercase tracking-widest text-zinc-400">최근 활동 로그</h4>
+                  {selectedMember.activityLogs.length === 0 ? (
+                    <p className="text-sm font-bold text-zinc-400">최근 활동 로그가 없습니다.</p>
+                  ) : (
+                    <div className="space-y-4">
+                      {selectedMember.activityLogs.map((log, index) => (
+                        <div key={log.id} className="flex gap-4 rounded-3xl border border-zinc-100 bg-zinc-50 p-5">
+                          <div className="mt-1">
+                            <div
+                              className={`rounded-full ${
+                                index === 0 ? 'flex h-4 w-4 items-center justify-center bg-primary/20' : 'h-3 w-3 bg-zinc-300'
+                              }`}
+                            >
+                              {index === 0 ? <div className="h-2 w-2 rounded-full bg-primary" /> : null}
                             </div>
-                         </div>
-                         <div className="col-span-5 flex items-center gap-4">
-                            {member.image ? (
-                               <img src={member.image} alt={member.name} className="w-10 h-10 rounded-full object-cover shadow-sm border-2 border-white" />
-                            ) : (
-                               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-black ${
-                                  isSelected ? 'bg-zinc-800 text-white' : 'bg-red-50 text-zinc-400'
-                               }`}>
-                                  {member.initial}
-                               </div>
-                            )}
-                            <div>
-                               <h3 className={`font-black text-sm mb-0.5 ${isSelected ? 'text-primary' : 'text-zinc-800'}`}>
-                                  {member.name}
-                               </h3>
-                               <p className="text-[11px] text-zinc-400 font-bold">{member.email}</p>
-                            </div>
-                         </div>
-                         <div className="col-span-3 flex justify-center">
-                            <span className={`text-[10px] font-black px-3 py-1 rounded-md tracking-wider ${
-                               member.status === '활성' ? 'bg-blue-50 text-blue-500' : 'bg-red-50 text-red-500'
-                            }`}>
-                               {member.status}
-                            </span>
-                         </div>
-                         <div className="col-span-3 flex items-center text-xs font-bold text-zinc-600">
-                            {member.role}
-                         </div>
-                      </div>
-                   )
-                })}
-             </div>
-             <div className="px-6 py-6 text-[11px] font-bold text-zinc-400 tracking-wider">
-                총 1,240명 중 1-20 표시
-             </div>
-          </div>
-       </div>
-
-       {/* Right Panel (Detail) */}
-       <div className="w-[500px] bg-white border-l border-zinc-100 flex flex-col relative shadow-[-20px_0_40px_rgb(0,0,0,0.03)] z-50 h-full overflow-hidden">
-          <div className="flex justify-between items-center p-8 border-b border-zinc-50 bg-white z-10">
-             <div>
-                <h2 className="text-xl font-black text-zinc-900 mb-1">회원 상세 정보</h2>
-                <p className="text-[11px] text-zinc-400 font-bold">회원정보를 수정하고 권한을 관리합니다.</p>
-             </div>
-             <button className="text-zinc-300 hover:text-zinc-800 transition-colors">
-                <span className="material-symbols-outlined text-2xl">close</span>
-             </button>
+                          </div>
+                          <div className="min-w-0">
+                            <p className={`mb-1 text-[13px] font-black ${index === 0 ? 'text-zinc-900' : 'text-zinc-700'}`}>
+                              {log.activityTitle}
+                            </p>
+                            <p className="mb-1 text-[11px] font-bold text-zinc-500">{log.activityDetail ?? '-'}</p>
+                            <p className="text-[10px] font-bold tracking-wider text-zinc-400">{log.createdAt}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
           </div>
 
-          <div className="flex-1 overflow-y-auto px-10 pb-40 custom-scrollbar">
-             {/* Profile Header */}
-             <div className="flex flex-col items-center justify-center py-10 border-b border-zinc-50 mb-10">
-                <div className="relative mb-5">
-                   {selectedMember.image ? (
-                     <img src={selectedMember.image} alt={selectedMember.name} className="w-24 h-24 rounded-full object-cover shadow-lg border-4 border-white" />
-                   ) : (
-                     <div className="w-24 h-24 bg-zinc-100 rounded-full flex items-center justify-center text-2xl font-black text-zinc-400 border-4 border-white shadow-lg">
-                        {selectedMember.initial}
-                     </div>
-                   )}
-                   <button className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg border border-zinc-100 hover:scale-105 active:scale-95 transition-all text-primary">
-                      <span className="material-symbols-outlined text-[14px]">photo_camera</span>
-                   </button>
-                </div>
-                <h3 className="text-2xl font-black text-zinc-900 mb-1">{selectedMember.name}</h3>
-                <p className="text-sm font-bold text-zinc-500 mb-4">{selectedMember.email}</p>
-                <div className="flex gap-2">
-                   <span className="bg-blue-50 text-blue-500 text-[10px] font-black px-3 py-1.5 rounded-full tracking-wider">Developer</span>
-                   <span className="bg-green-50 text-green-600 text-[10px] font-black px-3 py-1.5 rounded-full tracking-wider">Email Verified</span>
-                </div>
-             </div>
-
-             {/* Basic Info Form */}
-             <div className="space-y-6 mb-10">
-                <h4 className="text-[11px] font-black text-zinc-400 uppercase tracking-widest">기본 정보</h4>
-                
-                <div className="space-y-2">
-                   <label className="text-[11px] font-bold text-zinc-500 px-1">성명</label>
-                   <input type="text" value={selectedMember.name} readOnly className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl py-4 px-5 text-sm font-bold text-zinc-800 outline-none focus:border-zinc-300" />
-                </div>
-                
-                <div className="space-y-2">
-                   <label className="text-[11px] font-bold text-zinc-500 px-1">연락처</label>
-                   <input type="text" value={selectedMember.phone} readOnly className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl py-4 px-5 text-sm font-bold text-zinc-800 outline-none focus:border-zinc-300" />
-                </div>
-             </div>
-
-             {/* Status Setting */}
-             <div className="space-y-6 mb-12">
-                <h4 className="text-[11px] font-black text-zinc-400 uppercase tracking-widest">상태 설정</h4>
-                <div className="relative">
-                   <select className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl py-4 px-5 text-sm font-bold text-zinc-800 outline-none appearance-none cursor-pointer hover:border-zinc-200">
-                      <option>정상 ({selectedMember.status})</option>
-                      <option>이용 정지</option>
-                      <option>탈퇴</option>
-                   </select>
-                   <span className="material-symbols-outlined absolute right-5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none text-lg">expand_more</span>
-                </div>
-             </div>
-
-             {/* Role Management */}
-             <div className="space-y-4 mb-12 border-t border-zinc-50 pt-10">
-                <div className="flex items-center justify-between mb-2">
-                   <h4 className="text-[11px] font-black text-zinc-400 uppercase tracking-widest">권한 및 ROLE 관리</h4>
-                   <button className="text-[10px] font-black text-red-600 hover:text-red-700 transition-colors hover:underline tracking-wider">역할 추가</button>
-                </div>
-                
-                <div className="space-y-3">
-                   <div className="flex items-center justify-between border border-primary/20 bg-[#fff0f7] rounded-3xl p-5 cursor-pointer shadow-sm">
-                      <div className="flex items-center gap-4">
-                         <div className="w-10 h-10 bg-white rounded-xl shadow-sm border border-zinc-100 flex items-center justify-center text-zinc-500">
-                            <span className="material-symbols-outlined text-[18px]">terminal</span>
-                         </div>
-                         <div>
-                            <p className="text-sm font-black text-zinc-900 mb-0.5">API Developer</p>
-                            <p className="text-[10px] font-bold text-zinc-400">API Key 생성 및 문서 접근 권한</p>
-                         </div>
-                      </div>
-                      <span className="material-symbols-outlined text-primary text-[22px]">check_circle</span>
-                   </div>
-
-                   <div className="flex items-center justify-between border border-zinc-100 bg-white hover:bg-zinc-50 rounded-3xl p-5 cursor-pointer transition-colors">
-                      <div className="flex items-center gap-4">
-                         <div className="w-10 h-10 bg-white rounded-xl shadow-sm border border-zinc-100 flex items-center justify-center text-zinc-500">
-                            <span className="material-symbols-outlined text-[18px]">payments</span>
-                         </div>
-                         <div>
-                            <p className="text-sm font-black text-zinc-900 mb-0.5">Billing Manager</p>
-                            <p className="text-[10px] font-bold text-zinc-400">결제 내역 조회 및 결제 수단 권리</p>
-                         </div>
-                      </div>
-                      <div className="w-5 h-5 rounded-full border-2 border-zinc-200 bg-white"></div>
-                   </div>
-                </div>
-             </div>
-
-             {/* Activity Log */}
-             <div className="space-y-6 pt-10 border-t border-zinc-50">
-                <h4 className="text-[11px] font-black text-zinc-400 uppercase tracking-widest mb-6">최근 활동 로그</h4>
-                <div className="relative pl-6 border-l border-zinc-200 ml-2">
-                   <div className="absolute w-4 h-4 rounded-full bg-primary/20 flex items-center justify-center -left-[8.5px] top-0 shadow-sm">
-                      <div className="w-2 h-2 rounded-full bg-primary"></div>
-                   </div>
-                   <div className="mb-8 -mt-1">
-                      <p className="text-[13px] font-black text-zinc-900 mb-1">비밀번호 변경</p>
-                      <p className="text-[10px] font-bold text-zinc-400 tracking-wider">2024.05.20 10:15</p>
-                   </div>
-                   
-                   <div className="absolute w-3 h-3 rounded-full bg-zinc-200 border-2 border-white -left-[6px] top-16 shadow-sm"></div>
-                   <div className="mt-8">
-                      <p className="text-[13px] font-black text-zinc-400 mb-1">로그인 시도 (Windows/Chrome)</p>
-                      <p className="text-[10px] font-bold text-zinc-400 tracking-wider">2024.05.19 09:21</p>
-                   </div>
-                </div>
-             </div>
+          <div className="absolute bottom-0 left-0 z-20 flex w-full gap-4 border-t border-zinc-100 bg-zinc-50/80 p-8 backdrop-blur-md">
+            <button
+              onClick={() => setSelectedMember(null)}
+              className="flex-1 rounded-2xl border-2 border-zinc-100 bg-white py-4 text-sm font-black text-zinc-700 transition-all hover:border-zinc-200 hover:bg-zinc-50 active:scale-95"
+            >
+              닫기
+            </button>
           </div>
-
-          {/* Bottom Fixed Area */}
-          <div className="absolute bottom-0 left-0 w-full p-8 bg-zinc-50/80 backdrop-blur-md border-t border-zinc-100 flex gap-4 z-20">
-             <button className="flex-1 bg-white border-2 border-zinc-100 text-zinc-700 py-4 rounded-2xl text-sm font-black hover:bg-zinc-50 transition-all active:scale-95 hover:border-zinc-200">변경 취소</button>
-             <button className="flex-1 bg-primary text-white py-4 rounded-2xl text-sm font-black hover:brightness-95 shadow-xl shadow-primary/20 transition-all active:scale-95">저장하기</button>
-          </div>
-       </div>
-
+        </div>
+      ) : null}
     </div>
   );
 };

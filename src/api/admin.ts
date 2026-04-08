@@ -44,7 +44,41 @@ export interface SaveAdminApiRequest {
   fields: Array<Omit<AdminApiField, 'id'>>;
 }
 
+export interface AdminUserActivityLog {
+  id: string;
+  activityType: string;
+  activityTitle: string;
+  activityDetail?: string;
+  actorUsername?: string;
+  createdAt: string;
+}
+
+export interface AdminUserEntry {
+  id: string;
+  username: string;
+  name: string;
+  email: string;
+  status: string;
+  role: string;
+  phone?: string;
+  profileImageUrl?: string;
+  lastLoginAt?: string;
+}
+
+export interface AdminUserListResponse {
+  items: AdminUserEntry[];
+  page: number;
+  size: number;
+  totalCount: number;
+  totalPages: number;
+}
+
+export interface AdminUserDetail extends AdminUserEntry {
+  activityLogs: AdminUserActivityLog[];
+}
+
 const ADMIN_API_BASE_URL = `${API_ROOT}/admin/api`;
+const ADMIN_USERS_BASE_URL = `${API_ROOT}/admin/users`;
 
 function getAccessToken(): string | null {
   try {
@@ -135,6 +169,34 @@ export async function updateAdminApi(id: string, payload: SaveAdminApiRequest): 
   try {
     const response = await axios.put(`${ADMIN_API_BASE_URL}/${id}`, payload, getAuthorizedConfig());
     return unwrapData<AdminApiEntry>(response.data);
+  } catch (error) {
+    throw toAdminApiError(error);
+  }
+}
+
+export interface FetchAdminUsersParams {
+  page?: number;
+  size?: number;
+  keyword?: string;
+  status?: 'ACTIVE' | 'INACTIVE';
+}
+
+export async function fetchAdminUsers(params: FetchAdminUsersParams = {}): Promise<AdminUserListResponse> {
+  try {
+    const response = await axios.get(ADMIN_USERS_BASE_URL, {
+      ...getAuthorizedConfig(),
+      params,
+    });
+    return unwrapData<AdminUserListResponse>(response.data);
+  } catch (error) {
+    throw toAdminApiError(error);
+  }
+}
+
+export async function fetchAdminUserDetail(id: string): Promise<AdminUserDetail> {
+  try {
+    const response = await axios.get(`${ADMIN_USERS_BASE_URL}/${id}`, getAuthorizedConfig());
+    return unwrapData<AdminUserDetail>(response.data);
   } catch (error) {
     throw toAdminApiError(error);
   }

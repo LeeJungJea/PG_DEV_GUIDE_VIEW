@@ -18,7 +18,7 @@ export interface LoginResponseData {
 export async function login(payload: LoginPayload): Promise<LoginResponseData> {
   const response = await axios.post(`${AUTH_BASE_URL}/login`, payload);
   if (!response.data?.data) {
-    throw new Error(response.data?.message ?? '濡쒓렇???묐떟??泥섎━?????놁뒿?덈떎.');
+    throw new Error(response.data?.message ?? '로그인 응답을 처리할 수 없습니다.');
   }
 
   return response.data.data as LoginResponseData;

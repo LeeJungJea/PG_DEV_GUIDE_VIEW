@@ -33,7 +33,7 @@ const PlaygroundCallbackPage: React.FC = () => {
       <div className="max-w-lg rounded-[28px] border border-zinc-100 bg-white p-8 text-center shadow-sm">
         <h1 className="mb-4 text-2xl font-black text-zinc-900">결제 결과를 처리하는 중입니다</h1>
         <p className="text-sm font-medium leading-relaxed text-zinc-500">
-          팝업이 자동으로 닫히지 않으면 이 창을 닫고 원래 테스트 화면으로 돌아가 주세요.
+          팝업이 자동으로 닫히지 않으면 이 창을 닫고 아래 테스트 화면으로 돌아가 주세요.
         </p>
       </div>
     </div>
