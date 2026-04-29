@@ -1,4 +1,6 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+﻿// 담당자: 이정재
+// 관리자 문의 현황을 숫자와 차트로 요약하는 대시보드다.
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   type AdminInquiryEntry,
@@ -7,6 +9,8 @@ import {
   fetchAdminInquiryDashboardUnhandled,
 } from '../../api/admin';
 
+// 관리자 대시보드는 문의 현황을 숫자와 차트로 한 번에 보여 주는 요약 화면이다.
+// useMemo와 useEffect를 함께 써서, 데이터 조회와 시각화 계산을 분리해 둔다.
 const CATEGORY_LABEL: Record<string, string> = {
   PAYMENT_ERROR: '결제/승인 오류',
   API_INTEGRATION: 'API 연동 문의',
@@ -86,9 +90,11 @@ const Dashboard: React.FC = () => {
   });
 
   useEffect(() => {
+    // 첫 번째 effect는 오늘/어제/월간 요약과 미처리 문의를 한 번에 불러온다.
     let mounted = true;
 
     const run = async () => {
+      // 여러 API를 같이 호출해 첫 화면을 한 번에 채운다.
       try {
         const current = new Date();
         const today = formatDateOnly(current);
@@ -170,9 +176,11 @@ const Dashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    // 두 번째 effect는 최근 7일 추이를 재계산한다.
     let mounted = true;
 
     const run = async () => {
+      // 날짜 범위를 먼저 잡고, 그 안의 일별 합계를 다시 모은다.
       try {
         const trendEndDate = new Date();
         trendEndDate.setDate(trendEndDate.getDate() - dailyWindowOffsetDays);
@@ -210,6 +218,7 @@ const Dashboard: React.FC = () => {
   }, [dailyWindowOffsetDays]);
 
   const trendWindowStartDate = useMemo(() => {
+    // 차트 축 시작 날짜를 계산해 7일 구간을 맞춘다.
     const date = new Date(trendWindowEndDate);
     date.setDate(trendWindowEndDate.getDate() - 6);
     return date;
@@ -500,4 +509,3 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
-

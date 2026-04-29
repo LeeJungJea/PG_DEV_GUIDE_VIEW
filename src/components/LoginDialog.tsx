@@ -1,7 +1,11 @@
+// 담당자: 이정재
+// 로그인 모달과 인증 성공 후 이동 흐름을 담당하는 컴포넌트다.
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../hooks/useAuth';
 
+// LoginDialog는 버튼 클릭 때만 열리는 모달이라, 평소에는 화면에 렌더링하지 않는다.
+// 조건부 렌더링과 상태 관리를 함께 보는 좋은 예시라서, 스터디용 설명을 붙이기 좋다.
 interface LoginDialogProps {
   isOpen: boolean;
   onClose: () => void;
@@ -18,6 +22,8 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // 로그인 성공 후에는 모달을 닫고, 관리자라면 별도 대시보드로 이동한다.
+    // SPA에서는 이런 페이지 이동도 새로고침 없이 처리된다.
     if (user && isOpen) {
       onClose();
       if (user.role === 'ADMIN') {
@@ -29,6 +35,7 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ isOpen, onClose }) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
+      // 입력값 앞뒤 공백을 제거한 뒤 로그인 API에 전달한다.
       await login({
         username: credentials.username.trim(),
         password: credentials.password,

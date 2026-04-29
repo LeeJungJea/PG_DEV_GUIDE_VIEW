@@ -19,6 +19,8 @@ interface AuthState {
 
 const STORAGE_KEY = 'auth_state';
 
+// localStorage에 저장된 값을 읽어오면 새로고침 후에도 로그인 상태를 유지할 수 있다.
+// ES5 시절처럼 전역 변수에 기대지 않고, Zustand store로 상태와 UI를 분리한다.
 const getInitialState = (): Partial<AuthState> => {
   try {
     const persisted = localStorage.getItem(STORAGE_KEY);
@@ -33,6 +35,8 @@ const persistState = (state: Partial<AuthState>) => {
 };
 
 export const useAuthStore = create<AuthState>((set) => ({
+  // Zustand는 create 안에서 상태와 액션을 함께 정의한다.
+  // 컴포넌트는 이 store를 구독해서 로그인 여부와 사용자 정보를 자동으로 반영한다.
   user: undefined,
   loading: false,
   error: undefined,
@@ -41,6 +45,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   login: async (payload: LoginPayload) => {
     set({ loading: true, error: undefined });
     try {
+      // 서버 응답에서 필요한 사용자 정보만 추려 store에 저장한다.
       const response = await loginRequest(payload);
       const user = {
         username: response.username,
@@ -57,6 +62,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
   logout: () => {
+    // 로그아웃은 화면 상태와 저장된 토큰을 함께 지워야 새로고침 후에도 인증 정보가 남지 않는다.
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem('token');
     set({ user: undefined, error: undefined });

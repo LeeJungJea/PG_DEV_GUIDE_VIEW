@@ -1,3 +1,5 @@
+// 담당자: 이정재
+// 관리자 화면에서 쓰는 목록/상세/저장 API를 모아 둔 클라이언트다.
 import axios from 'axios';
 import { API_ROOT } from './index';
 

@@ -1,4 +1,6 @@
-﻿import React from 'react';
+// 담당자: 이정재
+// 서비스 하단 공통 정보를 보여 주는 푸터 컴포넌트다.
+import React from 'react';
 
 const Footer: React.FC = () => {
   return (

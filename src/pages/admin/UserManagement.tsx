@@ -1,3 +1,5 @@
+﻿// 담당자: 노혜정
+// 관리자 회원 목록과 상세 패널을 차분하게 살펴볼 수 있도록 만든 화면이다.
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   type AdminUserDetail,
@@ -10,6 +12,8 @@ type MemberTab = 'ALL' | 'ACTIVE' | 'INACTIVE';
 
 const PAGE_SIZE = 20;
 
+// 관리자 회원관리 화면은 목록, 필터, 상세 패널이 함께 있는 마스터-디테일 구조다.
+// React 상태를 나눠 두면 검색, 탭, 페이지, 상세 패널을 각각 조금씩 편하게 다룰 수 있다.
 function getInitial(name: string) {
   return name.trim().charAt(0).toUpperCase() || '?';
 }
@@ -50,6 +54,7 @@ const UserManagement: React.FC = () => {
   }, [activeTab]);
 
   useEffect(() => {
+    // 목록은 검색어, 탭, 페이지가 바뀔 때마다 다시 불러온다.
     let isMounted = true;
 
     const loadMembers = async () => {
@@ -94,6 +99,7 @@ const UserManagement: React.FC = () => {
   ];
 
   const openMemberDetail = async (member: AdminUserEntry) => {
+    // 행을 더블클릭하면 우측 패널에 상세 정보를 채운다.
     setIsDetailLoading(true);
     setErrorMessage(null);
 

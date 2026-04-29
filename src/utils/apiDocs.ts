@@ -1,3 +1,5 @@
+// 담당자: 김준우
+// API 문서 슬러그, 정렬, 아이콘 규칙을 정리하는 공통 유틸이다.
 import type { AdminApiEntry, AdminApiField } from '../api/admin';
 
 const API_MENU_ORDER: Record<string, number> = {

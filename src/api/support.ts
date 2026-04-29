@@ -1,3 +1,5 @@
+// 담당자: 이정재
+// 일반 사용자 문의 작성과 조회를 담당하는 프론트 API 클라이언트다.
 import axios from 'axios';
 import { API_ROOT } from './index';
 

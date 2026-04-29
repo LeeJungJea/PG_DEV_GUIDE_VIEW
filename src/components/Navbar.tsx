@@ -1,8 +1,11 @@
-﻿import React from 'react';
+// 담당자: 이정재
+// SPA 전체에서 반복해서 보이는 공통 레이아웃 요소다.
+import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import LoginDialog from './LoginDialog';
 import { useAuthStore } from '../hooks/useAuth';
 
+// React에서는 이런 공통 UI를 컴포넌트로 분리해, 경로가 바뀌어도 같은 구조를 재사용한다.
 const Navbar: React.FC = () => {
   const location = useLocation();
   const { user, logout, isLoginOpen, setLoginOpen } = useAuthStore((state) => ({ 
@@ -28,6 +31,7 @@ const Navbar: React.FC = () => {
         {/* Left: Logo & Main Links */}
         <div className="flex items-center gap-8 shrink-0">
           {isAdminPath ? (
+            // 관리자 페이지에서는 일반 사용자용 이동 링크를 줄이고, 콘솔 성격의 로고만 보여 준다.
             <span className="text-xl font-black tracking-tight text-primary cursor-default">
               CJ PG Developer Center
             </span>
@@ -39,6 +43,7 @@ const Navbar: React.FC = () => {
           
           {!isAdminPath && (
             <div className="hidden lg:flex gap-6">
+              {/* React Router의 Link는 페이지 전체 새로고침 없이 경로만 바꾸는 SPA 방식에 맞다. */}
               <Link
                 to="/api"
                 className={`${
@@ -81,6 +86,7 @@ const Navbar: React.FC = () => {
               </button>
             </div>
           ) : (
+            // 로그인 전에는 버튼 하나만 보여 주고, 모달은 별도의 컴포넌트로 띄운다.
             <button
               type="button"
               className="bg-primary text-white px-6 py-2.5 rounded-xl text-sm font-black shadow-lg shadow-primary/20 transition-all hover:bg-primary/90 active:scale-95"
@@ -97,4 +103,3 @@ const Navbar: React.FC = () => {
 };
 
 export default Navbar;
-

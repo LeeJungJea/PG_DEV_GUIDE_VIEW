@@ -1,3 +1,5 @@
+// 담당자: 이정재
+// 전체 화면 레이아웃과 사이드바 표시 조건을 조절하는 공통 래퍼다.
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
@@ -45,4 +47,3 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 };
 
 export default Layout;
-

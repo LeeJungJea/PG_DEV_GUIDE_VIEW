@@ -1,3 +1,5 @@
+﻿// 담당자: 김준우
+// 관리자 API 등록과 수정, 엔드포인트 편집을 담당하는 화면이다.
 import React, { useEffect, useMemo, useState } from 'react';
 import { API_ROOT } from '../../api';
 import {
@@ -37,7 +39,11 @@ const FIELD_TYPE_OPTIONS = ['String', 'Integer', 'Long', 'Boolean', 'Number', 'O
 const STATUS_ACTIVE = '정상 운영';
 const STATUS_NEEDS_ATTENTION = '점검 필요';
 
+// 관리자 API 관리 화면은 API 목록, 상세 편집, 필드 편집을 한 화면에서 다루는 편집형 UI다.
+// useState가 많지만 각각 역할이 분명하므로, 생성/수정/조회 상태를 분리해서 유지한다.
 const normalizeEndpointPath = (value: string) => {
+  // 사용자가 전체 URL을 붙여 넣어도 저장은 경로만 남긴다.
+  // 환경이 달라져도 값이 흔들리지 않도록, 여기서 입력 형식을 먼저 정리한다.
   const trimmed = value.trim();
 
   if (!trimmed) {
@@ -96,11 +102,13 @@ const ApiManagement: React.FC = () => {
   };
 
   const handleRefresh = async () => {
+    // 폼을 닫고 목록을 다시 읽어오면, 저장 후 최신 상태를 바로 볼 수 있다.
     closeForm();
     await loadApis();
   };
 
   useEffect(() => {
+    // 첫 진입 시 API 목록을 불러온다.
     loadApis();
   }, []);
 
@@ -144,6 +152,7 @@ const ApiManagement: React.FC = () => {
   };
 
   const openEditForm = async (api: AdminApiEntry) => {
+    // 수정 모달을 열자마자 상세를 불러와 필드 편집 상태를 채운다.
     setFormMode('edit');
     setSelectedApiId(api.id);
     setDetailLoading(true);
@@ -187,6 +196,7 @@ const ApiManagement: React.FC = () => {
   };
 
   const syncFieldOrder = (fields: AdminApiField[]) =>
+    // 드래그나 추가/삭제 뒤에는 화면에 보이는 순서대로 번호를 다시 맞춘다.
     fields.map((field, index) => ({
       ...field,
       fieldOrder: index + 1,
@@ -231,11 +241,14 @@ const ApiManagement: React.FC = () => {
   const requestFields = apiFields
     .filter((field) => field.fieldScope === 'REQUEST')
     .sort((a, b) => a.fieldOrder - b.fieldOrder);
+  // 응답 필드도 따로 분리해 두면, 요청과 응답 구조를 헷갈리지 않고 편집할 수 있다.
   const responseFields = apiFields
     .filter((field) => field.fieldScope === 'RESPONSE')
     .sort((a, b) => a.fieldOrder - b.fieldOrder);
 
   const buildSavePayload = () => ({
+    // 화면 곳곳에 흩어진 값을 서버용 DTO 형태로 한 번 묶는다.
+    // 여기서 trim, 기본값 보정, 필드 순서 정리까지 같이 끝내 두면 저장 로직이 단순해진다.
     name: formValues.name.trim(),
     method: formValues.method,
     version: formValues.version.trim(),
@@ -258,6 +271,7 @@ const ApiManagement: React.FC = () => {
   });
 
   const handleSave = async () => {
+    // 저장 전에는 필수값이 비어 있지 않은지 먼저 확인한다.
     const payload = buildSavePayload();
 
     if (!payload.name || !payload.version || !payload.endpoint) {

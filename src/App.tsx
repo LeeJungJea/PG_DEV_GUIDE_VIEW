@@ -1,3 +1,5 @@
+// 담당자: 이정재
+// 전체 라우팅 구조와 관리자 접근 제어를 묶는 앱 루트 컴포넌트다.
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';

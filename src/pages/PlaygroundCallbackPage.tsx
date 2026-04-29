@@ -1,3 +1,5 @@
+// 담당자: 김준우
+// Playground 팝업에서 돌아오는 콜백 결과를 받아 처리하는 페이지다.
 import React, { useEffect } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 

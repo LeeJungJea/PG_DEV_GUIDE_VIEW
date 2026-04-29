@@ -1,3 +1,5 @@
+﻿// 담당자: 김준우
+// API 문서와 관리자 메뉴를 함께 담는 좌측 네비게이션이다.
 import React, { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../hooks/useAuth';
@@ -5,6 +7,8 @@ import { fetchPublicApiEntries } from '../api/docs';
 import type { AdminApiEntry } from '../api/admin';
 import { getApiDocSlug, getApiMenuIcon, sortApiEntries } from '../utils/apiDocs';
 
+// Sidebar는 현재 경로가 /admin인지 /api 계열인지에 따라 메뉴가 달라지는 공통 내비게이션이다.
+// React Router의 location 값을 보고, 같은 컴포넌트 안에서 일반 사용자 메뉴와 관리자 메뉴를 분기한다.
 const Sidebar: React.FC = () => {
   const location = useLocation();
   const user = useAuthStore((state) => state.user);
@@ -14,6 +18,8 @@ const Sidebar: React.FC = () => {
   ]);
 
   useEffect(() => {
+    // 일반 사용자 영역에서는 API 목록을 서버에서 받아와 동적으로 메뉴를 구성한다.
+    // useEffect는 렌더링 이후에 실행되므로, 데이터 패칭 같은 사이드 이펙트에 적합하다.
     if (isAdminPath) {
       return;
     }

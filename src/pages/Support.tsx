@@ -1,4 +1,6 @@
-﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
+﻿// 담당자: 이정재
+// 일반 사용자의 문의 작성과 목록 조회를 담당하는 지원 페이지다.
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useAuthStore } from '../hooks/useAuth';
 import {
   createSupportInquiry,
@@ -90,6 +92,8 @@ const Support: React.FC = () => {
   const [detailLoading, setDetailLoading] = useState(false);
   const [openedInquiryDetail, setOpenedInquiryDetail] = useState<MySupportInquiryDetail | null>(null);
 
+  // 목록은 최신순으로만 본다.
+  // 원본 배열은 건드리지 않고 복사본만 정렬하면 React 상태 흐름이 덜 흔들린다.
   const sortedInquiries = useMemo(
     () =>
       [...inquiries].sort((a, b) => {
@@ -102,11 +106,13 @@ const Support: React.FC = () => {
 
   const totalPages = Math.max(1, Math.ceil(sortedInquiries.length / PAGE_SIZE));
 
+  // 목록이 길어져도 5개씩만 끊어 보여 주면 화면이 덜 무거워진다.
   const pagedInquiries = useMemo(() => {
     const start = (currentPage - 1) * PAGE_SIZE;
     return sortedInquiries.slice(start, start + PAGE_SIZE);
   }, [currentPage, sortedInquiries]);
 
+  // 제목과 본문이 채워지고, 전송 중이 아닐 때만 등록 버튼을 켠다.
   const canSubmit = useMemo(
     () => title.trim().length > 0 && hasContent(contentHtml) && !submitting,
     [contentHtml, submitting, title],
@@ -127,17 +133,20 @@ const Support: React.FC = () => {
   };
 
   useEffect(() => {
+    // 로그인한 사용자만 다시 읽는다.
     void loadInquiries();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.username]);
 
   useEffect(() => {
+    // 페이지가 범위를 넘으면 마지막 페이지로 돌려놓는다.
     if (currentPage > totalPages) {
       setCurrentPage(totalPages);
     }
   }, [currentPage, totalPages]);
 
   useEffect(() => {
+    // 미리보기 URL은 끝나면 바로 정리해 준다.
     return () => {
       editorFiles.forEach((item) => URL.revokeObjectURL(item.previewUrl));
     };
@@ -152,6 +161,7 @@ const Support: React.FC = () => {
     const editor = editorRef.current;
     if (!editor) return;
 
+    // contentEditable 안에 이미지를 직접 넣어야 커서 위치가 덜 어색하다.
     const image = document.createElement('img');
     image.setAttribute('src', file.previewUrl);
     image.setAttribute('data-inline-key', file.key);
@@ -162,6 +172,7 @@ const Support: React.FC = () => {
     image.style.display = 'block';
 
     const selection = window.getSelection();
+    // 커서가 있으면 그 위치에 넣고, 없으면 뒤에 붙인다.
     if (selection && selection.rangeCount > 0 && editor.contains(selection.anchorNode)) {
       const range = selection.getRangeAt(0);
       range.insertNode(image);
@@ -200,6 +211,7 @@ const Support: React.FC = () => {
   const addFilesToEditor = (selected: File[]) => {
     if (selected.length === 0) return;
 
+    // 파일은 먼저 걸러서, 본문에 이상한 형식이 들어가지 않게 한다.
     const validNewItems: EditorUploadFile[] = [];
 
     for (const file of selected) {

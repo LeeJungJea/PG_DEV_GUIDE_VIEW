@@ -1,5 +1,7 @@
-﻿import React from 'react';
+import React from 'react';
 
+// 결제 문서는 실제 API 호출이 아니라, 사용자가 읽기 쉽게 정리한 설명 페이지다.
+// React에서는 이런 정적 문서도 컴포넌트로 만들어 라우팅에 붙일 수 있다.
 const PaymentDoc: React.FC = () => {
   return (
     <div className="max-w-5xl">
@@ -36,6 +38,7 @@ const PaymentDoc: React.FC = () => {
         {/* Left Column: Params & Tables */}
         <div className="lg:col-span-7 space-y-12">
           <section>
+            {/* 표 형태 문서는 파라미터 이름, 타입, 설명을 한 번에 비교하기 좋다. */}
             <h2 className="text-2xl font-bold mb-6 text-zinc-900 flex items-center gap-2">
               <span className="w-1.5 h-6 bg-primary rounded-full"></span>
               요청 파라미터
@@ -87,6 +90,7 @@ const PaymentDoc: React.FC = () => {
 
           {/* Tips Section */}
           <section className="p-6 bg-primary/5 rounded-xl border border-primary/10">
+            {/* 초보자용 설명은 "이 값이 어디에 쓰이는가"를 따로 적어 주면 이해가 빨라진다. */}
             <h4 className="text-sm font-bold text-primary flex items-center gap-2 mb-2 italic">
                <span className="material-symbols-outlined text-sm">lightbulb</span>
                결제 연동 팁

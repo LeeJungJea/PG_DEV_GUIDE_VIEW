@@ -1,4 +1,6 @@
-﻿import axios from 'axios';
+// 담당자: 이정재
+// 로그인 API 호출과 응답 타입을 묶은 프론트 전용 클라이언트다.
+import axios from 'axios';
 import { AUTH_BASE_URL } from './index';
 
 export interface LoginPayload {
@@ -23,4 +25,3 @@ export async function login(payload: LoginPayload): Promise<LoginResponseData> {
 
   return response.data.data as LoginResponseData;
 }
-

@@ -1,10 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
+// 담당자: 김준우
+// API 문서 페이지의 상세 설명과 예시 코드를 보여 주는 화면이다.
 import { useNavigate, useParams } from 'react-router-dom';
 import type { AdminApiDetail, AdminApiField } from '../../api/admin';
 import { API_ROOT } from '../../api';
 import { fetchPublicApiDetail, fetchPublicApiEntries } from '../../api/docs';
 import { getApiDocSlug, sortApiEntries, sortFieldsByScopeAndOrder } from '../../utils/apiDocs';
 
+// API 문서 페이지는 정적 설명과 서버에서 받아온 스펙을 합쳐 보여 주는 화면이다.
+// useMemo는 계산 비용이 있는 예시 JSON 생성 로직을 불필요하게 다시 만들지 않도록 도와준다.
 function getExampleValue(field: AdminApiField): string | number | boolean | null | Record<string, never> | [] {
   if (field.sampleValue) {
     if (field.fieldType === 'Integer' || field.fieldType === 'Long' || field.fieldType === 'Number') {
@@ -132,6 +136,8 @@ const ApiDocPage: React.FC = () => {
   const [error, setError] = useState<string | undefined>();
 
   useEffect(() => {
+    // URL slug가 바뀌면 해당 문서의 상세 정보를 다시 불러온다.
+    // React의 useEffect는 렌더링 이후 비동기 데이터를 가져올 때 자주 쓴다.
     let mounted = true;
 
     const load = async () => {
@@ -207,6 +213,7 @@ const ApiDocPage: React.FC = () => {
 
   const renderFieldTable = (title: string, fields: AdminApiField[]) => (
     <section>
+      {/* 표 형태는 파라미터 이름, 타입, 위치, 설명을 한 번에 비교하기 좋다. */}
       <h2 className="mb-6 flex items-center gap-2 text-2xl font-bold text-zinc-900">
         <span className="h-6 w-1.5 rounded-full bg-primary" />
         {title}

@@ -1,3 +1,5 @@
+// 담당자: 김준우
+// 공개 API 문서 페이지가 읽는 문서 조회 전용 클라이언트다.
 import axios from 'axios';
 import { API_ROOT } from './index';
 import type { AdminApiDetail, AdminApiEntry } from './admin';
@@ -9,13 +11,13 @@ function toDocsApiError(error: unknown): Error {
     const serverMessage = error.response?.data?.message;
 
     if (error.request && !error.response) {
-      return new Error('API 문서 서버에 연결할 수 없습니다. 서버 주소와 실행 상태를 확인해 주세요.');
+      return new Error('API 문서 서버와 연결되지 않습니다. 서버 주소와 실행 상태를 확인해 주세요.');
     }
 
-    return new Error(serverMessage ?? 'API 문서를 불러오는 중 오류가 발생했습니다.');
+    return new Error(serverMessage ?? 'API 문서를 불러오는 중 에러가 발생했습니다.');
   }
 
-  return error instanceof Error ? error : new Error('API 문서를 불러오는 중 알 수 없는 오류가 발생했습니다.');
+  return error instanceof Error ? error : new Error('API 문서를 불러오는 중 알 수 없는 에러가 발생했습니다.');
 }
 
 function unwrapData<T>(payload: unknown): T {

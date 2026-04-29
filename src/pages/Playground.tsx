@@ -1,3 +1,5 @@
+// 담당자: 김준우
+// API 테스트와 콜백 흐름을 직접 확인하는 Playground 화면이다.
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import axios from 'axios';
 import { API_ROOT } from '../api';

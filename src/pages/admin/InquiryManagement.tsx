@@ -1,4 +1,6 @@
-﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
+﻿// 담당자: 이정재
+// 관리자 문의 목록, 상세, 답변 편집을 담당하는 화면이다.
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   type AdminInquiryDetail,
   type AdminInquiryEntry,
@@ -21,6 +23,8 @@ const PAGE_SIZE = 10;
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
 const ALLOWED_EXTENSIONS = new Set(['jpg', 'jpeg', 'png']);
 
+// 관리자 문의관리 화면은 목록, 상세, 답변 편집, 파일 첨부를 동시에 다루는 구조다.
+// useEffect가 여러 개지만, 각각 리스트 로딩, 첨부 정리, 편집기 동기화처럼 역할을 분리한다.
 const STATUS_LABEL: Record<AdminInquiryStatus, string> = {
   RECEIVED: '접수',
   IN_PROGRESS: '처리중',
@@ -105,6 +109,7 @@ const InquiryManagement: React.FC = () => {
   const isDateFilterIgnored = activeTab === 'RECEIVED' || activeTab === 'IN_PROGRESS';
 
   const applySelectedInquiry = (detail: AdminInquiryDetail) => {
+    // 선택한 문의의 상세와 답변 초안을 같이 동기화한다.
     setSelectedInquiry(detail);
     setAnswerDraft(detail.answerContentText ?? '');
     setAnswerFiles((prev) => {
@@ -114,6 +119,7 @@ const InquiryManagement: React.FC = () => {
   };
 
   useEffect(() => {
+    // 선택한 문의가 바뀌면 HTML 편집기의 내용을 다시 맞춘다.
     if (answerEditorRef.current) {
       answerEditorRef.current.innerHTML = answerDraft;
     }
@@ -121,12 +127,14 @@ const InquiryManagement: React.FC = () => {
   }, [selectedInquiry?.id]);
 
   useEffect(() => {
+    // 첨부 파일 미리보기 URL은 컴포넌트가 바뀌면 정리해 메모리 누수를 막는다.
     return () => {
       answerFiles.forEach((item) => URL.revokeObjectURL(item.previewUrl));
     };
   }, [answerFiles]);
 
   useEffect(() => {
+    // 필터나 페이지가 바뀌면 목록과 통계를 다시 불러온다.
     let mounted = true;
 
     const run = async () => {

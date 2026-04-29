@@ -1,3 +1,5 @@
+// 담당자: 이정재
+// 프론트에서 사용할 API 루트 주소를 환경에 맞게 결정한다.
 const LOCAL_API_ROOT = 'http://localhost:8080';
 const DEPLOYED_VIEW_ORIGIN = 'https://pg-dev-guide-view-six.vercel.app';
 const DEPLOYED_API_ROOT = 'https://pg-dev-guide-api-692488808235.us-central1.run.app';
